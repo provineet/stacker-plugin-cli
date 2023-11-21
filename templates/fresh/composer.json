@@ -1,0 +1,43 @@
+{
+	"name": "vineet/stacker-wordpress-plugin-boilerplate",
+	"description": "A modern WordPress Plugin Development boilerplate for your next awesome project.",
+	"type": "project",
+	"license": "GPL-3-only",
+	"autoload": {
+		"psr-4": {
+			"{{namespace}}\\": "inc/"
+		}
+	},
+	"authors": [
+		{
+			"name": "Vineet Verma",
+			"email": "vineetvrm05@gmail.com"
+		}
+	],
+	"require": {
+		"php": "^5.6 || ^7.0 || ^8.0"
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^3.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"php-stubs/wordpress-stubs": "^6.3",
+		"php-stubs/woocommerce-stubs": "^8.2",
+		"phpunit/phpunit": "^5 || ^6 || ^7 || ^8",
+		"roots/wordpress": "^5.0",
+		"wp-phpunit/wp-phpunit": "^5.0",
+		"yoast/phpunit-polyfills": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"php-stubs/generator": "*"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"roots/wordpress-core-installer": true
+		}
+	},
+	"scripts": {
+		"test": "phpunit",
+		"phpcs": "vendor/bin/phpcs",
+		"phpcbf": "vendor/bin/phpcbf"
+	}
+}

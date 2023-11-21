@@ -1,0 +1,14 @@
+{
+	"apiVersion": 3,
+	"name": "stacker/first-block",
+	"title": "First Example Block",
+	"description": "First Block of our Stacker Plugin Boilerplate.",
+	"icon": "format-status",
+	"category": "stacker-boilerplate-category",
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"keywords": [ "stacker", "para" ],
+	"textdomain": "stacker-plugin-boilerplate",
+	"script": "file:index.js",
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css"
+}

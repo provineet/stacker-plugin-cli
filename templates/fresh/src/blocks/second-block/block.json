@@ -1,0 +1,14 @@
+{
+	"apiVersion": 3,
+	"name": "stacker/second-block",
+	"title": "Second Example Block",
+	"description": "Second Block of our Stacker Plugin Boilerplate.",
+	"icon": "smiley",
+	"category": "stacker-boilerplate-category",
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"keywords": [ "stacker", "para" ],
+	"textdomain": "stacker-plugin-boilerplate",
+	"script": "file:index.js",
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css"
+}
