@@ -42,8 +42,8 @@ class Hooks {
 	 */
 	public function stacker_enqueue_blocks_styles() {
 		if ( is_admin() ) {
-			wp_enqueue_style( 'stacker-blocks-editor', STACKER_PLUGIN_ASSETS . 'css/editor_blocks.css', array(), filemtime( STACKER_PLUGIN_PATH . 'assets/css/editor_blocks.css' ) );
+			wp_enqueue_style( 'stacker-blocks-editor', {{constantPrefix}}_ASSETS . 'css/editor_blocks.css', array(), filemtime( {{constantPrefix}}_PATH . 'assets/css/editor_blocks.css' ) );
 		}
-		wp_enqueue_style( 'stacker-blocks-styles', STACKER_PLUGIN_ASSETS . 'css/frontend_blocks.css', array(), filemtime( STACKER_PLUGIN_PATH . 'assets/css/frontend_blocks.css' ) );
+		wp_enqueue_style( 'stacker-blocks-styles', {{constantPrefix}}_ASSETS . 'css/frontend_blocks.css', array(), filemtime( {{constantPrefix}}_PATH . 'assets/css/frontend_blocks.css' ) );
 	}
 }
