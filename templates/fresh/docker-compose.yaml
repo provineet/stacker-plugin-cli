@@ -1,7 +1,6 @@
 version: '3.1'
 
 services:
-
   wordpress:
     build:
       context: .
@@ -10,8 +9,8 @@ services:
       - 8080:80
     environment:
       WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: user1
-      WORDPRESS_DB_PASSWORD: pass1
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: dbpass
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: 1
     volumes:
@@ -22,14 +21,14 @@ services:
 
 
   db:
-    image: mysql:5.7
+    image: mariadb:jammy
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: user1
-      MYSQL_PASSWORD: pass1
-      MYSQL_ROOT_PASSWORD: root
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wpuser
+      MARIADB_PASSWORD: dbpass
+      MARIADB_ROOT_PASSWORD: root
     ports:
       - 3308:3306
     volumes:
@@ -49,6 +48,7 @@ services:
 
   mailcatcher:
     image: dockage/mailcatcher
+    platform: linux/x86_64
     restart: always
     ports:
       - 1080:1080
