@@ -7,7 +7,7 @@
 	"category": "stacker-boilerplate-category",
 	"usesContext": [ "postId", "postType", "queryId" ],
 	"keywords": [ "stacker", "para" ],
-	"textdomain": "stacker-plugin-boilerplate",
+	"textdomain": "{{textDomain}}",
 	"script": "file:index.js",
 	"editorStyle": "file:index.css",
 	"style": "file:style-index.css"

@@ -24,8 +24,8 @@ const inputs = async () => {
 	});
 
 	if (confirmInputs === 'Yes') {
-		userInputs.name = strToCamelCase(userInputs.name);
-		userInputs.namespace = userInputs.name.replace(/ /g, "_").toUpperCase();
+		userInputs.name = userInputs.name.trim();
+		userInputs.namespace = strToCamelCase(userInputs.name).replace(/ /g, "_").toUpperCase();
 		userInputs.pluginFileName = userInputs.name.toLowerCase().replace(/ /g, "-");
 		userInputs.constantPrefix = userInputs.prefix.toUpperCase();
 		return userInputs;
@@ -42,17 +42,14 @@ const freshInstall = async () => {
 		message: 'Is your plugin registers Gutenberg blocks?',
 		choices: ['Yes', 'No'],
 	});
-	
 	const phpUnit = await choice({
 		message: 'Configure PHPUnit?',
 		choices: ['Yes', 'No'],
 	});
-	
 	const devEnv = await choice({
 		message: 'Which of the following development environment you are using?',
 		choices: ['Docker Desktop', 'LocalWP'],
 	});
-
 	const pluginName = await simpleText({
 		message: 'Name of your Plugin?',
 		hint: null,
@@ -67,13 +64,13 @@ const freshInstall = async () => {
 	const textDomain = await simpleText({
 		message: "Your plugin's text domain",
 		hint: null,
-		initial: 'stacker_plugin',
+		initial: pluginName.trim().toLowerCase().replace(/ /g, "-"),
 		validate
 	});
 	const prefix = await simpleText({
 		message: "Your plugin's prefix",
 		hint: 'prefix to be used to namespace plugin\'s global functions and constants.',
-		initial: 'stacker_plugin',
+		initial: pluginName.trim().toLowerCase().replace(/ /g, "_"),
 		validate
 	});
 	const pluginUrl = await simpleText({
@@ -99,7 +96,7 @@ const freshInstall = async () => {
 	const packageName = await simpleText({
 		message: 'Package name for @package directive for plugin files',
 		hint: null,
-		initial: 'Stacker'
+		initial: strToCamelCase( pluginName.trim() ),
 	});
 	const license = await simpleText({
 		message: 'License',
@@ -107,10 +104,11 @@ const freshInstall = async () => {
 		validate,
 		initial: 'GPL-3.0-or-later'
 	});
+	const proxyInitial = (devEnv === 'LocalWP') ? 'localwp.test' : 'localhost:8080';
 	const proxy = await simpleText({
 		message: 'Your local development URL to Proxy?',
 		hint: 'This is your local development URL to access your WordPress locally (To setup hot-reloading)',
-		initial: 'localwp.test'
+		initial: proxyInitial
 	});
 
 	console.log(`

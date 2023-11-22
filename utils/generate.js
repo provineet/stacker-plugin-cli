@@ -122,7 +122,7 @@ module.exports = async userInputs => {
 			// removing docker files if devEnv is localWp
 			if(userInputs.devEnv === 'LocalWP'){
 				shell.exec(
-					`rm -rf ${outDirPath}/docker-configs && rm docker-compose.yaml && rm Dockerfile`,
+					`rm -rf ${outDirPath}/docker-configs && rm ${outDirPath}/docker-compose.yaml && rm ${outDirPath}/Dockerfile`,
 					{silent: true}
 				);
 			}
@@ -130,7 +130,7 @@ module.exports = async userInputs => {
 			// removing PHPUnit files
 			if(userInputs.phpUnit === 'No'){
 				shell.exec(
-					`rm -rf ${outDirPath}/tests && rm .travis.yml && rm phpunit.xml.dist`,
+					`rm -rf ${outDirPath}/tests && rm ${outDirPath}/.travis.yml && rm ${outDirPath}/phpunit.xml.dist`,
 					{silent: true}
 				);
 			}

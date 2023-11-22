@@ -16,8 +16,8 @@ module.exports = dirName => {
 		)}`);
 
 		shell.exec(
-			`cd ${dirName} && git init && echo 'GIT Initialized' && npm i && composer install`,
-			{ async: true, silent: true },
+			`cd ${dirName} && git init && echo 'GIT Initialized' && npm i && composer install && npm run build`,
+			{ async: true, silent: false },
 			function (code, stdout, stderr) {
 				if (code == 0) {
 					spinner.succeed(`${g(`🚀🚀🚀 PLUGIN DEPENDENCIES INSTALLED...`)}`);

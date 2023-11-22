@@ -13,7 +13,7 @@ tests_add_filter(
 	'muplugins_loaded',
 	function () {
 		// test set up, plugin activation, etc.
-		require dirname( __DIR__ ) . '/stacker-wordpress-plugin-boilerplate.php';
+		require dirname( __DIR__ ) . '/{{pluginFileName}}.php';
 	}
 );
 

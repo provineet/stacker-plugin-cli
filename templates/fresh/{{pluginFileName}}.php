@@ -39,9 +39,9 @@ along with Stacker. If not, see https://www.gnu.org/licenses/old-licenses/gpl-2.
 
 // our plugin constants.
 ( defined( '{{constantPrefix}}_DEVELOPMENT_MODE' ) ) || define( '{{constantPrefix}}_DEVELOPMENT_MODE', true );
-( defined( '{{constantPrefix}}_NAME' ) ) || define( '{{constantPrefix}}_NAME', 'Stacker Plugin Boilerplate' );
+( defined( '{{constantPrefix}}_NAME' ) ) || define( '{{constantPrefix}}_NAME', '{{name}}' );
 ( defined( '{{constantPrefix}}_VERSION' ) ) || define( '{{constantPrefix}}_VERSION', '1.0.0' );
-( defined( '{{constantPrefix}}_SLUG' ) ) || define( '{{constantPrefix}}_SLUG', 'stacker-plugin-boilerplate' );
+( defined( '{{constantPrefix}}_SLUG' ) ) || define( '{{constantPrefix}}_SLUG', '{{textDomain}}' );
 ( defined( '{{constantPrefix}}_PATH' ) ) || define( '{{constantPrefix}}_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 ( defined( '{{constantPrefix}}_URI' ) ) || define( '{{constantPrefix}}_URI', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 ( defined( '{{constantPrefix}}_ASSETS' ) ) || define( '{{constantPrefix}}_ASSETS', {{constantPrefix}}_URI . '/assets/' );
