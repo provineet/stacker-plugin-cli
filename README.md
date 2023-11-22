@@ -152,8 +152,6 @@ $ `composer run test`
 - `npm run phpcs` : To execute PHP Code Sniffer with WordPress coding standards on your plugin files.
 - `npm run phpcbf` : To execute PHP Code Beautifier with WordPress coding standards on your plugin files to fix PHPWPCS errors in your plugin files.
 
-### 📖 Generated Theme's Documentation : <a href="https://github.com/provineet/bootflow/">Stacker Plugin Boilerplate Github Repo.</a>
-
 <br>
 <blockquote>
 Follow me on twitter. I tweet about Dev Tools, latest tech and tuts for the community. 🐦 <a href="https://twitter.com/mrvineetverma">@MrVineetVerma</a>
