@@ -1,4 +1,4 @@
-![WordPress Scaffolding Plugin Generator](./stacker-plugin-cli.png)
+![WordPress Scaffolding Plugin Generator](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/stacker-plugin-cli.png)
 
 # STACKER-plugin-CLI : WordPress Plugin Developer Toolkit.
 
@@ -18,7 +18,7 @@ A Zero-Configuration WordPress plugin development toolkit that kickstarts your n
     </tr>
 </tbody></table>
 
-![Version: v1.0.0](https://img.shields.io/npm/v/stacker-plugin-cli?label=version&style=flat-square)
+![Version: v1.0.0](https://img.shields.io/npm/v/stacker-plugin-cli?style=flat-square)
 ![License](https://img.shields.io/npm/l/stacker-plugin-cli?style=flat-square)
 ![npm](https://img.shields.io/npm/dt/stacker-plugin-cli?style=flat-square)
 ![Maintainer](https://img.shields.io/badge/maintainer-%40provineet-blue?style=flat-square)
