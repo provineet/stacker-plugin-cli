@@ -27,7 +27,7 @@ const sassOptions = {
 // styles for our plugin. (styles used out of blocks)
 function pluginStyles() {
 	return gulp
-		.src( [ PATHS.scss + '/admin.scss', PATHS.scss + '/public.scss' ] )
+		.src( [ PATHS.scss + '/**/*.scss', `!${ PATHS.scss }/**/_*.scss` ] )
 		.pipe( sass( sassOptions ).on( 'error', sass.logError ) )
 		.pipe( postcss( postCSSOptions ) )
 		.pipe( gulp.dest( PATHS.outputcss ) );

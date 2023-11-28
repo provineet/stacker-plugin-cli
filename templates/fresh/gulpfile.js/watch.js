@@ -67,7 +67,7 @@ function watchPHP() {
 }
 
 // Watches for changes in scss, images, fonts and all .php files
-function watch() {
+function watchAll() {
 	browsersync();
 	watchSCSS();
 	// enabled hot-reloading for Blocks JS only when support is enabled.
@@ -79,4 +79,4 @@ function watch() {
 	watchPHP();
 }
 
-module.exports = { watch };
+module.exports = { watchAll };

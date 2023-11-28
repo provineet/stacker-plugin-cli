@@ -1,7 +1,8 @@
+const { series } = require( 'gulp' );
 const { SUPPORTS } = require( './gulpfile.config' );
 const { pluginStyles, blocksEditorStyles, blocksStyles } = require( './scss' );
 const { copyassets } = require( './copyassets' );
-const { watch } = require( './watch' );
+const { watchAll } = require( './watch' );
 const { build } = require( './createdist' );
 const { phpsniff } = require( './phpsniffer' );
 const { parallel } = require( 'gulp' );
@@ -15,7 +16,7 @@ if ( SUPPORTS.includes( 'blocks' ) ) {
 module.exports = {
 	scss,
 	copyassets,
-	watch,
+	watch: series( scss, watchAll ),
 	build,
 	phpsniff,
 };

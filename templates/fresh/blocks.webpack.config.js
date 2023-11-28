@@ -1,3 +1,5 @@
+const glob = require( 'glob' );
+const path = require( 'path' );
 /**
  * WP Scripts default webpack.config.js
  */
@@ -7,21 +9,24 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
  */
 const { getWebpackEntryPoints } = require( '@wordpress/scripts/utils' );
 
+const assetsFiles = {};
+
+glob.sync( __dirname + '/src/assets/js/*.js', {
+	ignore: [ 'node_modules/**', __dirname + '/src/assets/js/_*.js' ],
+} ).forEach( ( file ) => {
+	const fileName = path.basename( file );
+	assetsFiles[ fileName ] = {
+		import: file,
+		filename: '../assets/js/' + fileName,
+	};
+} );
+
 const entryPoints = getWebpackEntryPoints();
 
 module.exports = {
 	...defaultConfig,
 	entry: {
 		...entryPoints,
-		// entry point for our plugin's common admin.js file
-		admin: {
-			import: './src/assets/js/admin.js',
-			filename: '../assets/js/admin.js',
-		},
-		// entry point for our plugin's common public.js file
-		public: {
-			import: './src/assets/js/public.js',
-			filename: '../assets/js/public.js',
-		},
+		...assetsFiles,
 	},
 };
