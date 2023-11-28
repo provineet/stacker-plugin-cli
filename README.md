@@ -1,6 +1,6 @@
-![WordPress Scaffolding Plugin Generator](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/stacker-plugin-cli.png)
+# STACKER-plugin-CLI : WordPress Plugin Developer Toolkit
 
-# STACKER-plugin-CLI : WordPress Plugin Developer Toolkit.
+![WordPress Scaffolding Plugin Generator](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/stacker-plugin-cli.png)
 
 A Zero-Configuration WordPress plugin development toolkit that kickstarts your next WordPress plugin development project with modern tools and workflows.
 
@@ -29,6 +29,7 @@ A Zero-Configuration WordPress plugin development toolkit that kickstarts your n
 Stacker-plugin-cli scaffolds a starter WordPress plugin folder using the values supplied through a CLI interface.
 
 Stacker CLI plugin by default supports:
+
 - Classes & Functions auto-loading for 'inc' folder
 - Optional GutenBerg Blocks development
 - Docker Compose or wpLocal development envrionment
@@ -43,7 +44,7 @@ Stacker CLI plugin by default supports:
 
 ### ⚡️ Create a fresh plugin in your plugin's folder
 
-In your terminal window and cd to your local wp-plugin directory, where you want to start developing the plugin and run the below given npx command:
+In your terminal window; cd to your plugin development folder 'wp-content/plugins/' and run the below given npx command:
 
 $ `npx stacker-plugin-cli`
 
@@ -60,7 +61,6 @@ To sniff your plugin's php files for WordPress coding standards.
 $ `composer run phpcbf`
 
 To fix WordPress coding standards errors within your plugin's directory.
-
 
 ### Generated Plugin's Folder Structure with docker compose, xdebug, and phpunit configured
 
@@ -103,7 +103,7 @@ To fix WordPress coding standards errors within your plugin's directory.
     └── blocks                          '(gutenberg blocks files)'
 ```
 
-## ⚡️ Installation Options:
+## ⚡️ Installation Options
 
 - Install for Docker Compose
 - Install for wpLocal
@@ -138,7 +138,7 @@ Once the plugin is installed run PHP tests by running below command in your gene
 
 $ `composer run test`
 
-## ⚡️ NPM Commands available:
+## ⚡️ NPM Commands available
 
 - `npm run build` : To build your plugin files with blocks and other assets.
 - `npm run start` : To start watching your development changes in JS, IMG, and SCSS files in src/blocks and src/assets folder. Kicks hot-reloading as well.
@@ -146,11 +146,11 @@ $ `composer run test`
 - `npm run devdist` : To create a distributable version of plugin for other fellow developers who don't have access to your private git repo.
 - `npm run format` : To format your plugin's SCSS and Js files.
 
-## ⚡️ Composer Commands available:
+## ⚡️ Composer Commands available
 
 - `composer run test` : To run php tests defined in ./tests/ directory of your plugin.
-- `npm run phpcs` : To execute PHP Code Sniffer with WordPress coding standards on your plugin files.
-- `npm run phpcbf` : To execute PHP Code Beautifier with WordPress coding standards on your plugin files to fix PHPWPCS errors in your plugin files.
+- `composer run phpcs` : To execute PHP Code Sniffer with WordPress coding standards on your plugin files.
+- `composer run phpcbf` : To execute PHP Code Beautifier with WordPress coding standards on your plugin files to fix PHPWPCS errors in your plugin files.
 
 <br>
 <blockquote>
