@@ -48,8 +48,8 @@ $ `npx stacker-plugin-cli`
 
 You will be asked a few questions to generate & configure your plugin files, answer them correctly and a fresh WordPress plugin boilerplate will be generated inside your current working directory (which usually, should be your wp-content/plugins) folder.
 
-![Stacker Pluigin CLI Questions](./img/questions.png)
-![Stacker Plugin Generated](./img/done.png)
+![Stacker Pluigin CLI Questions](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/img/questions.png)
+![Stacker Plugin Generated](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/img/done.png)
 
 Once the files are generated successfully, cd to your generated plugin's directory and install npm and composer dependencies.
 
