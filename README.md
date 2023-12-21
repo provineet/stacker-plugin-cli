@@ -24,11 +24,7 @@ A Zero-Configuration WordPress plugin development toolkit that kickstarts your n
 ![Maintainer](https://img.shields.io/badge/maintainer-%40provineet-blue?style=flat-square)
 <br>
 
-## 🚀 How it works?
-
-Stacker-plugin-cli scaffolds a starter WordPress plugin folder using the values supplied through a CLI interface.
-
-Stacker CLI plugin by default supports:
+## Stacker Plugin Boilerplate Supports
 
 - Classes & Functions auto-loading for 'inc' folder
 - Optional GutenBerg Blocks development
@@ -40,29 +36,34 @@ Stacker CLI plugin by default supports:
 - WordPress Coding Standards, WooCommerce Coding Standards & Fixes via PHPCS/PHPCBF
 - Gulp, SASS, Babel, Webpack, AutoPrefixer, BrowserSync (Reloads your browser while development), assets minification and image optimizations.
 
-## ⚡️ Quick Installation
+## 🚀 How the CLI works?
 
-### ⚡️ Create a fresh plugin in your plugin's folder
+Stacker-plugin-cli asks a set of questions required to scaffolds your WordPress plugin.
 
-In your terminal window; cd to your plugin development folder 'wp-content/plugins/' and run the below given npx command:
+### :arrow_right: Quick Installation
+
+In your terminal window; cd to your plugin development folder 'wp-content/plugins' and run the below given npx command:
 
 $ `npx stacker-plugin-cli`
 
 You will be asked a few questions to generate & configure your plugin files, answer them correctly and a fresh WordPress plugin boilerplate will be generated inside your current working directory (which usually, should be your wp-content/plugins) folder.
 
+![Stacker Pluigin CLI Questions](./img/questions.png)
+![Stacker Plugin Generated](./img/done.png)
+
+Once the files are generated successfully, cd to your generated plugin's directory and install npm and composer dependencies.
+
+$ `cd Your-Plugin-Folder`
+
+$ `npm install`
+
+$ `composer install`
+
+Now, you can start building your plugin using the npm command below:
+
 $ `npm run start`
 
-Start your development environment to watch changes in your PHP, Js, and SCSS files.
-
-$ `composer run phpcs`
-
-To sniff your plugin's php files for WordPress coding standards.
-
-$ `composer run phpcbf`
-
-To fix WordPress coding standards errors within your plugin's directory.
-
-### Generated Plugin's Folder Structure with docker compose, xdebug, and phpunit configured
+### :open_file_folder: Generated Plugin's Folder Structure with docker compose, xdebug, and phpunit configured
 
 ```bash
 ./plugin-name                           
@@ -103,38 +104,42 @@ To fix WordPress coding standards errors within your plugin's directory.
     └── blocks                          '(gutenberg blocks files)'
 ```
 
-## ⚡️ Installation Options
+## ⚡️ Begin Installation
 
-- Install for Docker Compose
-- Install for wpLocal
-- Install with xdebug configured
-- Install for PHPUnit configured
+### ⚡️ Create a fresh plugin in your plugin's folder
 
-### ⚡️ Install to use Docker Desktop Client as development enviroment
+In your terminal window; cd to your plugin development folder 'wp-content/plugins/' and run the below given npx command:
 
 $ `npx stacker-plugin-cli`
 
-From the options select Docker Compose as your development enviroment and rest will be taken care of by the generator.
+You will be asked a few questions to generate & configure your plugin files, answer them correctly and a fresh WordPress plugin boilerplate will be generated inside your current working directory (which usually, should be your wp-content/plugins) folder.
 
-### ⚡️ Install to use wpLocal as development enviroment
+$ `npm run start`
+
+Start your development environment to watch changes in your PHP, Js, and SCSS files.
+
+$ `composer run phpcs`
+
+To sniff your plugin's php files for WordPress coding standards.
+
+$ `composer run phpcbf`
+
+To fix WordPress coding standards errors within your plugin's directory.
+
+## ⚡️ Installation Configuration Options Available
+
+In the CLI questions you will be asked to pick these options to generate the plugin files depending on your development:
+
+1. <u>Installation with Docker Compose</u> : Choose Docker Compose as your development environment.
+2. <u>Installation to be used with WP Local (<https://localwp.com>)</u> : Choose WPLocal as your development environment.
+3. <u>Installation with xdebug configured</u> : From the options select 'Yes' for configuring xdebug.
+4. <u>Installation with PHPUnit configured</u> : From the options select 'Yes' for configuring PHPunit.
+
+### ⚡️ How to run php tests?
 
 $ `npx stacker-plugin-cli`
 
-From the options select wpLocal as your development enviroment and rest will be taken care of by the generator.
-
-### ⚡️ Install to configure xdebug for php debugging & VSCode IDE
-
-$ `npx stacker-plugin-cli`
-
-From the options select 'Yes' for configuring xdebug and rest will be taken care of by the generator.
-
-### ⚡️ Install to configure PHPUnit for PHP Unit testing
-
-$ `npx stacker-plugin-cli`
-
-From the options select 'Yes' for configuring PHPunit and rest will be taken care of by the generator.
-
-Once the plugin is installed run PHP tests by running below command in your generated plugin's folder:
+Run PHP tests by running below command in your generated plugin's folder:
 
 $ `composer run test`
 

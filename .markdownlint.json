@@ -9,7 +9,8 @@
         "strong",
         "br",
         "a",
-        "blockquote"
+        "blockquote",
+        "u"
       ]
     },
     "MD013": {
