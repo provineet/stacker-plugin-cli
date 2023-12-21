@@ -11,7 +11,7 @@ module.exports = {
 		notify: true,
 		ui: false,
 		proxy: {
-			target: 'localhost:10018',
+			target: '{{proxy}}',
 		},
 	},
 	watchFiles: {
