@@ -6,35 +6,10 @@ const alert = require('cli-alerts');
 const spinner = ora({ text: '' });
 
 module.exports = dirName => {
-	// Bug Fix: escape space in directory path
-	dirName = dirName.replace(/(\s+)/g, '\\$1');
-
-	// return new Promise((resolve, reject) => {
-		spinner.start(
-		`${y(`📦📦📦 INSTALLING PLUGIN DEPENDENCIES... 📦📦📦`)}\n\n${d(
-			`It may take moment…\n\n`
-		)}`);
-
-		shell.exec(
-			`cd ${dirName} && git init && echo 'GIT Initialized' && npm i && composer install && npm run build`,
-			{ async: true, silent: false },
-			function (code, stdout, stderr) {
-				if (code == 0) {
-					spinner.succeed(`${g(`🚀🚀🚀 PLUGIN DEPENDENCIES INSTALLED...`)}`);
-	
-					alert({
-						type: `success`,
-						msg: `🎉 Alright Sparky, Now develop something amazing.\n\nTo start developing the plugin checkout the boilerplate documentation here:\nhttps://github.com/provineet/stacker-plugin-boilerplate/`,
-						name: `ALL DONE`
-					});
-				} else {
-					spinner.fail(
-						`${r(
-							`${stderr}\n\nFAILED TO INSTALL DEPENDENCIES, KINDLY RESTART or CONTACT THE MAINTAINER @provineet...`
-						)}`
-					);
-				}
-			}
-		);
+	alert({
+		type: `success`,
+		msg: `🎉 Alright Sparky, Now develop something amazing.\n\nTo Begin; open the generated plugin's folder in your terminal and run below commands:\nnpm install\ncomposer install\nnpm run start.\n\nCheckout the boilerplate documentation here:\nhttps://github.com/provineet/stacker-plugin-boilerplate/`,
+		name: `Plugin Files Generated!!!`
+	});
 
 };
