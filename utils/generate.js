@@ -85,7 +85,7 @@ module.exports = async userInputs => {
 	// Adds/Remove Gutenberg Blocks Support
 	const packageBuildCommand = userInputs.blocks === 'No' ? 'js' : 'js:blocks';
 	const pluginSupports = userInputs.blocks === 'Yes' ? `['blocks']` : '[]';
-	const assetsFolder =  userInputs.blocks === 'Yes' ? `../assets/js/` : '';
+	const assetsFolder =  userInputs.blocks === 'Yes' ? `'../assets/js/' + ` : '';
 
 	userInputs = {
 		reqWP: '5.3',

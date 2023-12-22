@@ -17,7 +17,7 @@ glob.sync( __dirname + '/src/assets/js/*.js', {
 	const fileName = path.basename( file );
 	assetsFiles[ fileName ] = {
 		import: file,
-		filename: {assetsFolder} + fileName,
+		filename: {{assetsFolder}}fileName,
 	};
 } );
 
