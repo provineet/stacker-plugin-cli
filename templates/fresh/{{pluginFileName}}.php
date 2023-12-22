@@ -134,7 +134,7 @@ if ( true === {{constantPrefix}}_DEVELOPMENT_MODE ) {
 	 */
 	function {{prefix}}_send_mail() {
 		$headers[] = 'From: WordPress<wordpress@mysite.com>';
-		wp_mail( 'vineetvrm05@gmail.com', 'My subject', 'message', $headers );
+		wp_mail( 'youremail@gmail.com', 'My subject', 'message', $headers );
 	}
 
 	add_action( 'phpmailer_init', '{{prefix}}_mailer_config', 10, 1 );
