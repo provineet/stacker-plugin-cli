@@ -46,11 +46,14 @@ function watchFonts() {
 
 function watchJs() {
 	// Watches for Images file changes inside ./src
-	if ( watchFiles.js === true ) {
+	if (watchFiles.js === true) {
+		const watchPaths = [PATHS.outputjs + '/**/*.js'];
+		if (SUPPORTS.includes('blocks')) {
+			watchPaths.push(PATHS.blocks + '/**/*.js');
+		}
 		gulpWatch(
-			PATHS.blocks + '/**/*.js',
-			{ delay: 500 },
-			series( reloadBrowser )
+			watchPaths,
+			series(reloadBrowser)
 		);
 	}
 }
@@ -70,10 +73,7 @@ function watchPHP() {
 function watchAll() {
 	browsersync();
 	watchSCSS();
-	// enabled hot-reloading for Blocks JS only when support is enabled.
-	if ( SUPPORTS.includes( 'blocks' ) ) {
-		watchJs();
-	}
+	watchJs();
 	watchFonts();
 	watchImg();
 	watchPHP();
