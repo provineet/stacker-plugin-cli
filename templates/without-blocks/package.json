@@ -5,19 +5,17 @@
 	"main": "index.js",
 	"scripts": {
 		"build:js": "wp-scripts build --webpack-src-dir=./src/assets/js --output-path=./assets/js  --config webpack.config.js",
-		"build:js:blocks": "wp-scripts build  --webpack-src-dir=./src/blocks  --output-path=./blocks --config webpack.config.js",
 		"build:css": "gulp copyassets && gulp scss",
-		"build": "npm run clean && concurrently \"npm run build:{{packageBuildCommand}}\" \"npm run build:css\"",
+		"build": "npm run clean && concurrently \"npm run build:js\" \"npm run build:css\"",
 		"format": "wp-scripts format && stylelint \"**/*.scss\" --fix",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"watch:js": "wp-scripts start --webpack-src-dir=./src/assets/js --output-path=./assets/js  --config webpack.config.js",
-		"watch:js:blocks": "wp-scripts start --webpack-src-dir=./src/blocks --output-path=./blocks --config webpack.config.js",
 		"watch:css": "npm run build:css && gulp watch",
-		"start": "npm run clean && concurrently \"npm run watch:{{packageBuildCommand}}\" \"npm run watch:css\"",
+		"start": "npm run clean && concurrently \"npm run watch:js\" \"npm run watch:css\"",
 		"packages-update": "wp-scripts packages-update",
 		"prepare": "husky install",
-		"clean:build": "rimraf blocks assets",
+		"clean:build": "rimraf assets",
 		"clean:dist": "rimraf dist dev-dist",
 		"clean": "npm run clean:build && npm run clean:dist",
 		"dist": "npm run build && composer install --no-dev && gulp build && composer install",
@@ -27,11 +25,6 @@
 		"WordPress",
 		"Plugin",
 		"Boilerplate",
-		"WordPress",
-		"Plugin",
-		"Plugin",
-		"Boilerplate",
-		"Plugin",
 		"development"
 	],
 	"author": "{{authorName}}",
@@ -81,10 +74,6 @@
 		"wp-prettier": "^3.0.3"
 	},
 	"dependencies": {
-		"@wordpress/block-editor": "^12.12.0",
-		"@wordpress/blocks": "^12.21.0",
-		"@wordpress/components": "^25.10.0",
-		"@wordpress/i18n": "^4.44.0",
-		"classnames": "^2.3.2"
+		"@wordpress/i18n": "^4.44.0"
 	}
 }

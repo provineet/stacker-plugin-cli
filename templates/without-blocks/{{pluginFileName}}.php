@@ -45,8 +45,6 @@ along with {{name}}. If not, see https://www.gnu.org/licenses/old-licenses/gpl-2
 ( defined( '{{constantPrefix}}_PATH' ) ) || define( '{{constantPrefix}}_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 ( defined( '{{constantPrefix}}_URI' ) ) || define( '{{constantPrefix}}_URI', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 ( defined( '{{constantPrefix}}_ASSETS' ) ) || define( '{{constantPrefix}}_ASSETS', {{constantPrefix}}_URI . '/assets/' );
-// Set true if our plugin registers custom gutenbergs blocks.
-( defined( '{{constantPrefix}}_BLOCKS' ) ) || define( '{{constantPrefix}}_BLOCKS', true );
 
 /**
  * Plugin activation callback
@@ -80,46 +78,6 @@ if ( is_readable( {{constantPrefix}}_PATH . '/vendor/autoload.php' ) ) {
 if ( is_readable( {{constantPrefix}}_PATH . '/inc/class-loader.php' ) ) {
 	require_once {{constantPrefix}}_PATH . '/inc/class-loader.php';
 	\{{namespace}}\Loader::instance();
-}
-
-/**
- * ******************************************************************************************
- * If your plugin isn't registering custom gutenberg blocks.
- * 1. You can remove all the code below.
- * 2. Delete ./src/blocks directory.
- * 3. Delete ./build/blocks directory.
- * ******************************************************************************************
- */
-
-// Registers custom blocks of our theme.
-if ( {{constantPrefix}}_BLOCKS === true ) {
-	add_action( 'init', '{{prefix}}_register_custom_blocks' );
-
-	/**
-	 * Registers Blocks for our plugin.
-	 *
-	 * @return void
-	 */
-	function {{prefix}}_register_custom_blocks() {
-
-		register_block_type_from_metadata( __DIR__ . '/blocks/first-block' );
-		register_block_type_from_metadata( __DIR__ . '/blocks/second-block' );
-	}
-
-	// adds our plugin's custom block category.
-	add_filter(
-		'block_categories_all',
-		function ( $categories ) {
-
-			// Adding a new category.
-			$categories[] = array(
-				'slug'  => '{{blockCategory}}',
-				'title' => '{{name}} Blocks',
-			);
-
-			return $categories;
-		}
-	);
 }
 
 // Below code adds mailcatcher for docker compose.

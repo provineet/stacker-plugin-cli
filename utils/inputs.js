@@ -15,8 +15,15 @@ function strToCamelCase(str) {
 
 const inputs = async () => {
 
+	// fresh plugin, or layer the tooling onto an existing plugin?
+	const installType = await choice({
+		message: 'Are you starting a fresh plugin or integrating into an existing plugin?',
+		choices: ['Fresh install', 'Existing plugin'],
+	});
+	const isExisting = installType === 'Existing plugin';
+
 	// take user inputs
-	const userInputs = await freshInstall();
+	const userInputs = await collectInputs(isExisting);
 
 	// take confirmation on the user inputs
 	const confirmInputs = await confirm({
@@ -28,6 +35,15 @@ const inputs = async () => {
 		userInputs.namespace = strToCamelCase(userInputs.name).replace(/ /g, "_").toUpperCase();
 		userInputs.pluginFileName = userInputs.name.toLowerCase().replace(/ /g, "-");
 		userInputs.constantPrefix = userInputs.prefix.toUpperCase();
+		// block identifiers, derived from the text domain (already lowercase-kebab).
+		userInputs.blockNamespace = userInputs.textDomain.trim();
+		userInputs.blockCategory = `${userInputs.textDomain.trim()}-category`;
+		// composer vendor, derived from the author name (lowercase, hyphenated).
+		userInputs.composerVendor = userInputs.authorName
+			.trim()
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-+|-+$/g, '');
 		return userInputs;
 	} else if (confirmInputs === 'Restart') {
 		return 'Restart';
@@ -36,8 +52,8 @@ const inputs = async () => {
 	}
 };
 
-const freshInstall = async () => {
-	
+const collectInputs = async (isExisting = false) => {
+
 	const blocks = await choice({
 		message: 'Is your plugin registers Gutenberg blocks?',
 		choices: ['Yes', 'No'],
@@ -56,11 +72,16 @@ const freshInstall = async () => {
 		validate,
 		initial: 'Plugin Name'
 	});
-	const version = await simpleText({
-		message: 'Plugin Version',
-		validate: validations.version,
-		initial: '1.0.0'
-	});
+	// Version lives in the main plugin file's header, which existing-plugin
+	// integrations don't generate. A falsy version also routes generate.js to
+	// the 'existing' template (see setDirectories).
+	const version = isExisting
+		? undefined
+		: await simpleText({
+				message: 'Plugin Version',
+				validate: validations.version,
+				initial: '1.0.0'
+		  });
 	const textDomain = await simpleText({
 		message: "Your plugin's text domain",
 		hint: null,
@@ -93,6 +114,11 @@ const freshInstall = async () => {
 		hint: null,
 		initial: 'https://blogohblog.com',
 	});
+	const authorEmail = await simpleText({
+		message: 'Author Email',
+		hint: null,
+		initial: 'you@example.com',
+	});
 	const packageName = await simpleText({
 		message: 'Package name for @package directive for plugin files',
 		hint: null,
@@ -113,17 +139,20 @@ const freshInstall = async () => {
 
 	console.log(`
     ${y(
-		`Configuring a fresh installation of Stacker Plugin Boilerplate.`
+		isExisting
+			? `Integrating Stacker tooling into your existing plugin.`
+			: `Configuring a fresh installation of Stacker Plugin Boilerplate.`
 	)}}
 
-    ${d(`Plugin Name`)}: ${b(pluginName)}
-    ${d(`Version`)}: ${b(version)}
+    ${d(`Plugin Name`)}: ${b(pluginName)}${isExisting ? '' : `
+    ${d(`Version`)}: ${b(version)}`}
     ${d(`Text Domain`)}: ${b(textDomain)}
     ${d(`Function Prefix`)}: ${b(prefix)}
     ${d(`Plugin Url`)}: ${b(pluginUrl)}
     ${d(`Description`)}: ${b(description)}
     ${d(`Author Name`)}: ${b(authorName)}
     ${d(`Author Url`)}: ${b(authorUrl)}
+    ${d(`Author Email`)}: ${b(authorEmail)}
     ${d(`@Package`)}: ${b(packageName)}
     ${d(`License`)}: ${b(license)}
     ${d(`Development Environment`)}: ${b(devEnv)}
@@ -140,6 +169,7 @@ const freshInstall = async () => {
 		description,
 		authorName,
 		authorUrl,
+		authorEmail,
 		packageName,
 		blocks,
 		license,

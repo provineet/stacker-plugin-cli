@@ -1,0 +1,1 @@
+// files starting with an underscore '_' e.g. _module.js will not be transpiled in its own separate file in the final assets folder but it can be used as an ES module in other files.

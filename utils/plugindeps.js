@@ -1,9 +1,4 @@
-const shell = require('shelljs');
-const ora = require('ora');
-const { red: r, yellow: y, green: g, dim: d, blue: b, orange: o } = require('chalk');
 const alert = require('cli-alerts');
-
-const spinner = ora({ text: '' });
 
 module.exports = dirName => {
 	alert({
