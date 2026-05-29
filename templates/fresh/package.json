@@ -1,10 +1,10 @@
 {
-	"name": "stacker-plugin-boilerplate",
-	"version": "1.0.0",
-	"description": "A modern WordPress plugin development boilerplate for your next awesome project.",
+	"name": "{{textDomain}}",
+	"version": "{{version}}",
+	"description": "{{description}}",
 	"main": "index.js",
 	"files": [
-		"stacker-wordpress-plugin-boilerplate.php",
+		"{{pluginFileName}}.php",
 		"index.php",
 		"inc",
 		"blocks",
@@ -33,19 +33,11 @@
 		"devdist": "node bin/make-dev-archive.js"
 	},
 	"keywords": [
-		"WordPress",
-		"Plugin",
-		"Boiletplate",
-		"Stacker",
-		"WordPress",
-		"Plugin",
-		"Plugin",
-		"Boilerplate",
-		"Plugin",
-		"development"
+		"WordPress Plugin",
+		"{{name}}"
 	],
-	"author": "Vineet Verma",
-	"license": "GPL-3.0-only",
+	"author": "{{authorName}}",
+	"license": "{{license}}",
 	"prettier": "@wordpress/prettier-config",
 	"stylelint": {
 		"extends": "@wordpress/stylelint-config/scss"

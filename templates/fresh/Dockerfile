@@ -1,5 +1,5 @@
 # Tracks the latest WordPress release on PHP 8.3 (matches the plugin's
-# "Requires PHP: 8.1" / "Requires at least: 7.0" targets). Pin a specific WP
+# "Requires PHP: {{reqPHP}}" / "Requires at least: 7.0" targets). Pin a specific WP
 # tag (e.g. wordpress:6.8-php8.3-apache) if you need reproducible builds.
 #
 # Cross-platform: the official `wordpress` image and every package used below

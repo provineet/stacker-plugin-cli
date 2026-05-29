@@ -23,119 +23,119 @@ import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
 import { useInstanceId } from '@wordpress/compose';
 
-export default function MediaField( {
+export default function MediaField({
 	label,
 	value,
 	onChange,
 	help,
 	buttonLabel,
-} ) {
-	const instanceId = useInstanceId( MediaField );
-	const id = `stacker-media-${ instanceId }`;
-	const [ preview, setPreview ] = useState( '' );
+}) {
+	const instanceId = useInstanceId(MediaField);
+	const id = `stacker-media-${instanceId}`;
+	const [preview, setPreview] = useState('');
 
 	// Resolve a thumbnail URL for the current attachment ID, so the preview
 	// shows for both freshly picked and previously saved values.
-	useEffect( () => {
-		if ( ! value ) {
-			setPreview( '' );
+	useEffect(() => {
+		if (!value) {
+			setPreview('');
 			return undefined;
 		}
 
 		let cancelled = false;
 
-		apiFetch( { path: `/wp/v2/media/${ value }` } )
-			.then( ( media ) => {
-				if ( cancelled ) {
+		apiFetch({ path: `/wp/v2/media/${value}` })
+			.then((media) => {
+				if (cancelled) {
 					return;
 				}
 				const url =
 					media?.media_details?.sizes?.thumbnail?.source_url ||
 					media?.source_url ||
 					'';
-				setPreview( 'image' === media?.media_type ? url : '' );
-			} )
-			.catch( () => {
-				if ( ! cancelled ) {
-					setPreview( '' );
+				setPreview('image' === media?.media_type ? url : '');
+			})
+			.catch(() => {
+				if (!cancelled) {
+					setPreview('');
 				}
-			} );
+			});
 
 		return () => {
 			cancelled = true;
 		};
-	}, [ value ] );
+	}, [value]);
 
 	const openLibrary = () => {
-		if ( ! window.wp || ! window.wp.media ) {
+		if (!window.wp || !window.wp.media) {
 			return;
 		}
 
-		const frame = window.wp.media( {
-			title: __( 'Select media', '{{textDomain}}' ),
+		const frame = window.wp.media({
+			title: __('Select media', '{{textDomain}}'),
 			multiple: false,
-		} );
+		});
 
-		frame.on( 'select', () => {
+		frame.on('select', () => {
 			const attachment = frame
 				.state()
-				.get( 'selection' )
+				.get('selection')
 				.first()
 				.toJSON();
-			onChange( attachment.id );
-		} );
+			onChange(attachment.id);
+		});
 
 		frame.open();
 	};
 
 	return (
 		<BaseControl
-			id={ id }
-			label={ label }
-			help={ help }
+			id={id}
+			label={label}
+			help={help}
 			__nextHasNoMarginBottom
 		>
-			<Flex justify="flex-start" align="center" gap={ 3 }>
-				{ !! preview && (
+			<Flex justify="flex-start" align="center" gap={3}>
+				{!!preview && (
 					<FlexItem>
 						<img
-							src={ preview }
+							src={preview}
 							alt=""
 							className="stacker-media-field__preview"
 						/>
 					</FlexItem>
-				) }
+				)}
 				<FlexItem>
 					<Button
-						id={ id }
+						id={id}
 						variant="secondary"
-						onClick={ openLibrary }
+						onClick={openLibrary}
 						__next40pxDefaultSize
 					>
-						{ buttonLabel ||
-							__( 'Select media', '{{textDomain}}' ) }
+						{buttonLabel ||
+							__('Select media', '{{textDomain}}')}
 					</Button>
 				</FlexItem>
-				{ !! value && (
+				{!!value && (
 					<>
 						<FlexItem>
-							{ sprintf(
+							{sprintf(
 								/* translators: %d: attachment ID. */
-								__( 'Attachment #%d', '{{textDomain}}' ),
+								__('Attachment #%d', '{{textDomain}}'),
 								value
-							) }
+							)}
 						</FlexItem>
 						<FlexItem>
 							<Button
 								variant="link"
 								isDestructive
-								onClick={ () => onChange( 0 ) }
+								onClick={() => onChange(0)}
 							>
-								{ __( 'Remove', '{{textDomain}}' ) }
+								{__('Remove', '{{textDomain}}')}
 							</Button>
 						</FlexItem>
 					</>
-				) }
+				)}
 			</Flex>
 		</BaseControl>
 	);

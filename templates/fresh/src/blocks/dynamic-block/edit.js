@@ -15,30 +15,30 @@ import './editor.scss';
  * @param {Function} props.setAttributes Attribute setter.
  * @return {Element} Editor element.
  */
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit({ attributes, setAttributes }) {
 	const { label } = attributes;
 	const blockProps = useBlockProps();
 
 	return (
 		<>
 			<InspectorControls>
-				<PanelBody title={ __( 'Settings', '{{textDomain}}' ) }>
+				<PanelBody title={__('Settings', '{{textDomain}}')}>
 					<TextControl
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
-						label={ __( 'Label', '{{textDomain}}' ) }
-						value={ label }
-						onChange={ ( value ) =>
-							setAttributes( { label: value } )
+						label={__('Label', '{{textDomain}}')}
+						value={label}
+						onChange={(value) =>
+							setAttributes({ label: value })
 						}
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<p { ...blockProps }>
-				{ __(
+			<p {...blockProps}>
+				{__(
 					'Dynamic block — the published-post count is rendered on the server (render.php) each time the page loads.',
 					'{{textDomain}}'
-				) }
+				)}
 			</p>
 		</>
 	);

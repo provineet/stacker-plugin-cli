@@ -9,7 +9,7 @@
  */
 import { store, getContext } from '@wordpress/interactivity';
 
-store( 'stacker/interactive-block', {
+store('{{blockNamespace}}/interactive-block', {
 	state: {
 		// Derived state — recomputed automatically when `count` changes.
 		get isPositive() {
@@ -27,4 +27,4 @@ store( 'stacker/interactive-block', {
 			getContext().count = 0;
 		},
 	},
-} );
+});

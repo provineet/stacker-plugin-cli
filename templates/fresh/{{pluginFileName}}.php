@@ -5,20 +5,20 @@
  * @wordpress-plugin
  * Plugin Name:       {{name}}
  * Plugin URI:        {{authorUrl}}
- * Description:       A modern WordPress Plugin Development boilerplate for your next awesome project.
+ * Description:       {{description}}
  * Version:           {{version}}
- * Requires at least: 6.0
- * Requires PHP:      8.1
+ * Requires at least: {{reqWP}}
+ * Requires PHP:      {{reqPHP}}
  * Author:            {{authorName}}
  * Author URI:        {{authorUrl}}
  * Text Domain:       {{textDomain}}
  * License:           {{license}}
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  *
- * @package           Stacker
+ * @package           {{packageName}}
  *
  * @author            {{authorName}}
- * @copyright         2026 {{authorName}} | BlogOhBlog.com
+ * @copyright         {{year}} {{authorName}} | {{authorUrl}}
  * @license           {{license}}
  */
 
@@ -56,9 +56,9 @@ defined( '{{constantPrefix}}_DEVELOPMENT_MODE' ) || define(
 );
 
 // Our plugin constants.
-defined( '{{constantPrefix}}_NAME' ) || define( '{{constantPrefix}}_NAME', 'Stacker Plugin Boilerplate' );
+defined( '{{constantPrefix}}_NAME' ) || define( '{{constantPrefix}}_NAME', '{{name}}' );
 defined( '{{constantPrefix}}_VERSION' ) || define( '{{constantPrefix}}_VERSION', '{{version}}' );
-defined( '{{constantPrefix}}_SLUG' ) || define( '{{constantPrefix}}_SLUG', 'stacker-plugin-boilerplate' );
+defined( '{{constantPrefix}}_SLUG' ) || define( '{{constantPrefix}}_SLUG', '{{textDomain}}' );
 defined( '{{constantPrefix}}_PATH' ) || define( '{{constantPrefix}}_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 defined( '{{constantPrefix}}_URI' ) || define( '{{constantPrefix}}_URI', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 defined( '{{constantPrefix}}_ASSETS' ) || define( '{{constantPrefix}}_ASSETS', {{constantPrefix}}_URI . 'assets/' );
@@ -145,7 +145,7 @@ if ( true === {{constantPrefix}}_BLOCKS ) {
 		'block_categories_all',
 		static function ( array $categories ): array {
 			$categories[] = array(
-				'slug'  => '{{textDomain}}-category',
+				'slug'  => '{{blockCategory}}',
 				'title' => __( 'Stacker Blocks', '{{textDomain}}' ),
 			);
 

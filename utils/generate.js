@@ -105,14 +105,6 @@ module.exports = async userInputs => {
 		// remove src/blocks if the plugin isn't going to register gutenberg blocks.
 		if (userInputs.blocks === 'No') {
 			fs.rmSync(path.join(outDirPath, 'src/blocks'), { recursive: true, force: true });
-
-			// The block-free overlay rewrites the main plugin file and inc/admin
-			// hooks, which only exist in fresh installs. Existing-plugin
-			// integrations have neither, so we leave their PHP untouched.
-			if (userInputs.version) {
-				const inBlocks = path.join(__dirname, '../', 'templates/without-blocks');
-				await copyDir(inBlocks, outDirPath, userInputs);
-			}
 		}
 
 		// remove docker files if devEnv is LocalWP.

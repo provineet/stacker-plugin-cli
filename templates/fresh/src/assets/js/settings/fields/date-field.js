@@ -22,50 +22,50 @@ import {
 import { __ } from '@wordpress/i18n';
 import { useInstanceId } from '@wordpress/compose';
 
-export default function DateField( {
+export default function DateField({
 	label,
 	value,
 	onChange,
 	help,
 	placeholder,
-} ) {
-	const instanceId = useInstanceId( DateField );
-	const id = `stacker-date-${ instanceId }`;
+}) {
+	const instanceId = useInstanceId(DateField);
+	const id = `stacker-date-${instanceId}`;
 
 	return (
 		<BaseControl
-			id={ id }
-			label={ label }
-			help={ help }
+			id={id}
+			label={label}
+			help={help}
 			__nextHasNoMarginBottom
 		>
 			<div>
 				<Dropdown
-					popoverProps={ { placement: 'bottom-start' } }
-					renderToggle={ ( { isOpen, onToggle } ) => (
+					popoverProps={{ placement: 'bottom-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
 						<Button
-							id={ id }
+							id={id}
 							variant="secondary"
-							onClick={ onToggle }
-							aria-expanded={ isOpen }
+							onClick={onToggle}
+							aria-expanded={isOpen}
 							__next40pxDefaultSize
 						>
-							{ value ||
+							{value ||
 								placeholder ||
-								__( 'Select a date', '{{textDomain}}' ) }
+								__('Select a date', '{{textDomain}}')}
 						</Button>
-					) }
-					renderContent={ ( { onClose } ) => (
+					)}
+					renderContent={({ onClose }) => (
 						<DatePicker
-							currentDate={ value || undefined }
-							onChange={ ( newDate ) => {
+							currentDate={value || undefined}
+							onChange={(newDate) => {
 								onChange(
-									newDate ? newDate.slice( 0, 10 ) : ''
+									newDate ? newDate.slice(0, 10) : ''
 								);
 								onClose();
-							} }
+							}}
 						/>
-					) }
+					)}
 				/>
 			</div>
 		</BaseControl>

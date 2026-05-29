@@ -13,7 +13,7 @@
  *   bind-mounted into wp-content/mu-plugins by docker-compose.yaml and is never
  *   part of a real deployment.
  *
- * @package stacker-boilerplate
+ * @package Stacker Main-boilerplate
  */
 
 defined( 'ABSPATH' ) || exit;

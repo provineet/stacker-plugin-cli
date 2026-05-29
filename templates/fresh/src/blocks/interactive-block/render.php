@@ -23,7 +23,7 @@ ${{prefix}}_start = isset( $attributes['start'] ) ? (int) $attributes['start'] :
 ?>
 <div
 	<?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped by get_block_wrapper_attributes(). ?>
-	data-wp-interactive="stacker/interactive-block"
+	data-wp-interactive="{{blockNamespace}}/interactive-block"
 	<?php echo wp_interactivity_data_wp_context( array( 'count' => ${{prefix}}_start ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is escaped by wp_interactivity_data_wp_context(). ?>
 >
 	<p class="wp-block-stacker-interactive-block__count" data-wp-text="context.count"></p>

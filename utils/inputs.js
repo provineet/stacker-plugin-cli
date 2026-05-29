@@ -3,6 +3,7 @@ const { blue: b, dim: d, yellow: y, red: r } = require('chalk');
 
 const { confirm, simpleText, choice } = require('./ask');
 const validations = require('./validations');
+const pkg = require('./../package.json');
 
 let validate = validations.notEmpty;
 
@@ -80,7 +81,7 @@ const collectInputs = async (isExisting = false) => {
 		: await simpleText({
 				message: 'Plugin Version',
 				validate: validations.version,
-				initial: '1.0.0'
+				initial: pkg.version
 		  });
 	const textDomain = await simpleText({
 		message: "Your plugin's text domain",
@@ -96,7 +97,7 @@ const collectInputs = async (isExisting = false) => {
 	});
 	const pluginUrl = await simpleText({
 		message: 'Plugin Url',
-		initial: 'https://blogohblog.com',
+		initial: 'https://plugindomain.com',
 		hint: null
 	});
 	const description = await simpleText({
@@ -107,17 +108,17 @@ const collectInputs = async (isExisting = false) => {
 	const authorName = await simpleText({
 		message: 'Author Name',
 		hint: null,
-		initial: 'Vineet',
+		initial: 'Author Name',
 	});
 	const authorUrl = await simpleText({
 		message: 'Author Url',
 		hint: null,
-		initial: 'https://blogohblog.com',
+		initial: 'https://plugindomain.com',
 	});
 	const authorEmail = await simpleText({
 		message: 'Author Email',
 		hint: null,
-		initial: 'you@example.com',
+		initial: 'you@plugindomain.com',
 	});
 	const packageName = await simpleText({
 		message: 'Package name for @package directive for plugin files',
@@ -128,7 +129,7 @@ const collectInputs = async (isExisting = false) => {
 		message: 'License',
 		hint: null,
 		validate,
-		initial: 'GPL-3.0-or-later'
+		initial: 'GPL-2.0-or-later'
 	});
 	const proxyInitial = (devEnv === 'LocalWP') ? 'localwp.test' : 'localhost:8080';
 	const proxy = await simpleText({

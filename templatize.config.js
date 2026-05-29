@@ -70,13 +70,8 @@ module.exports = {
 		'LICENSE',
 		'readme.txt',
 		'readme.md',
-		'package.json',
-		'composer.json',
 		'docker-compose.yaml',
 		'docker-configs/**',
-		'composer.lock',
-		'package-lock.json',
-		'yarn.lock',
 	],
 
 	// value (in your working plugin)  ->  placeholder (token in templates/)
@@ -84,16 +79,16 @@ module.exports = {
 		// --- identity (edit these to match your source plugin) ---
 		{ value: 'Stacker Boilerplate Plugin', placeholder: '{{name}}' },
 		{ value: 'stacker-wordpress-plugin-boilerplate', placeholder: '{{pluginFileName}}' },
-		{ value: 'stacker-boilerplate', placeholder: '{{textDomain}}' }, // kept DISTINCT from pluginFileName so each maps unambiguously — use this exact (different) string for the text domain in your source plugin
+		{ value: 'stacker-plugin-boilerplate', placeholder: '{{textDomain}}' }, // kept DISTINCT from pluginFileName so each maps unambiguously — use this exact (different) string for the text domain in your source plugin
 		{ value: 'stacker_plugin', placeholder: '{{prefix}}' },
 		{ value: 'STACKER_PLUGIN', placeholder: '{{constantPrefix}}' },
 		{ value: 'namespace STACKER_PLUGIN', placeholder: 'namespace {{namespace}}' }, // often same as constantPrefix
-		{ value: '@package Stacker', placeholder: '@package {{packageName}}' },
+		{ value: 'Stacker Main', placeholder: '{{packageName}}' },
 
 		// --- composer / blocks ---
 		{ value: 'Vineet Verma', placeholder: '{{authorName}}' },
-		{ value: 'stacker-wordpress-plugin-boilerplate', placeholder: '{{blockNamespace}}' },
-		{ value: 'stacker-wordpress-plugin-boilerplate-category', placeholder: '{{blockCategory}}' },
+		{ value: 'stacker-block', placeholder: '{{blockNamespace}}' },
+		{ value: 'stacker-boilerplate-category', placeholder: '{{blockCategory}}' },
 
 		// --- author & urls ---
 		{ value: 'Vineet', placeholder: '{{authorName}}' },
@@ -102,7 +97,7 @@ module.exports = {
 		{ value: 'https://blogohblog.com', placeholder: '{{pluginUrl}}' },
 
 		// --- meta ---
-		// { value: 'My awesome WordPress Plugin.', placeholder: '{{description}}' },
+		{ value: 'A modern WordPress Plugin Development boilerplate for your next awesome project.', placeholder: '{{description}}' },
 		{ value: 'GPL-2.0-or-later', placeholder: '{{license}}' },
 		{ value: '1.0.0', placeholder: '{{version}}' },
 		{ value: 'localhost:10008', placeholder: '{{proxy}}' },

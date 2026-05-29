@@ -24,11 +24,11 @@ import { useBlockProps } from '@wordpress/block-editor';
  */
 export default function save() {
 	return (
-		<p { ...useBlockProps.save() }>
-			{ __(
+		<p {...useBlockProps.save()}>
+			{__(
 				'Stacker Boilerplate – hello from the first block content!',
 				'{{textDomain}}'
-			) }
+			)}
 		</p>
 	);
 }

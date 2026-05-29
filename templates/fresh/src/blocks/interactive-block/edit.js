@@ -12,12 +12,12 @@ import './editor.scss';
  */
 export default function Edit() {
 	return (
-		<div { ...useBlockProps() }>
+		<div {...useBlockProps()}>
 			<p>
-				{ __(
+				{__(
 					'Interactive block — on the front end this becomes a live counter driven by the Interactivity API (view.js).',
 					'{{textDomain}}'
-				) }
+				)}
 			</p>
 		</div>
 	);

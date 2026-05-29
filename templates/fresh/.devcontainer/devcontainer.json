@@ -15,7 +15,7 @@
 
 	// The plugin is bind-mounted here by docker-compose.yaml (see its volumes:),
 	// so this is where the source lives inside the container.
-	"workspaceFolder": "/var/www/html/wp-content/plugins/{{textDomain}}",
+	"workspaceFolder": "/var/www/html/wp-content/plugins/stacker-boilerplate",
 
 	// Match the host ports published in docker-compose.yaml.
 	"forwardPorts": [10008, 3308, 8082, 8026],

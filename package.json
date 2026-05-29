@@ -1,8 +1,8 @@
 {
   "name": "stacker-plugin-cli",
-  "description": "A zero configuration dev-toolkit for WordPress Plugin Developers.\nSupports: Gutenberg Blocks, PHPUnit, WPCS, LocalWP, Docker Compose and more.",
-  "version": "1.0.7",
-  "license": "MIT",
+  "description": "A zero configuration dev-toolkit for WordPress Plugin Developers.\nFeatures: Gutenberg Blocks, PHPUnit, WPCS, LocalWP, Docker Compose and Built-in React Settings Page, and more.",
+  "version": "2.0.0",
+  "license": "GPL-2.0-or-later",
   "bin": {
     "stacker": "index.js",
     "stk": "index.js"

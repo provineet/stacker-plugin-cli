@@ -1,12 +1,12 @@
 # Stacker WordPress Plugin Boilerplate
 
-A modern WordPress plugin development boilerplate (PHP 8.1+, WordPress 7.0) with
+A modern WordPress plugin development boilerplate (PHP {{reqPHP}}+, WordPress 7.0) with
 [`@wordpress/scripts`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/)
 for asset building and PHPUnit for testing.
 
 ## Requirements
 
-- PHP **8.1+** (CLI) with the `mysqli` extension
+- PHP **{{reqPHP}}+** (CLI) with the `mysqli` extension
 - Composer
 - Node.js + npm (for asset builds)
 - Docker + Docker Compose **v2** (optional — provides the full dev stack and the
@@ -60,7 +60,7 @@ Xdebug 3 is enabled in `debug,develop` mode on port **9003**, IDE key `VSCODE`
 **every OS** — required on Linux/WSL2, and a harmless no-op on Docker Desktop
 for Mac/Windows. Point your editor's debug listener at port 9003 and set a
 path mapping from the project root to
-`/var/www/html/wp-content/plugins/{{textDomain}}`.
+`/var/www/html/wp-content/plugins/stacker-boilerplate`.
 
 ### Develop in a Dev Container (VS Code)
 
@@ -68,7 +68,7 @@ path mapping from the project root to
 (VS Code [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
 extension + Docker). It **reuses the same `docker-compose.yaml`** — no second
 stack to maintain — and attaches the editor to the `wordpress` service, with the
-workspace rooted at `/var/www/html/wp-content/plugins/{{textDomain}}`.
+workspace rooted at `/var/www/html/wp-content/plugins/stacker-boilerplate`.
 
 1. Run the build tooling on the **host** first so `vendor/` and `node_modules/`
    exist (they're shared into the container via the bind mount):
@@ -312,8 +312,8 @@ const DEFAULTS = {
 {
     key: 'website_url',
     type: 'url',
-    label: __( 'Website URL', '{{textDomain}}' ),
-    help: __( 'The public-facing URL of your site.', '{{textDomain}}' ),
+    label: __( 'Website URL', 'stacker-boilerplate' ),
+    help: __( 'The public-facing URL of your site.', 'stacker-boilerplate' ),
 },
 ```
 

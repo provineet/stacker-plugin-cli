@@ -1,5 +1,6 @@
 const meow = require('meow');
 const meowHelp = require('cli-meow-help');
+const pkg = require('./../package.json');
 
 const flags = {
 	clear: {
@@ -20,7 +21,8 @@ const flags = {
 		desc: `Print debug info`
 	},
 	version: {
-		type: `boolean`,
+		type: `string`,
+		default: pkg.version,
 		alias: `v`,
 		desc: `Print CLI version`
 	},

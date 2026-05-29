@@ -49,29 +49,29 @@ const DEFAULTS = {
 const SECTIONS = [
 	{
 		name: 'general',
-		title: __( 'General', '{{textDomain}}' ),
+		title: __('General', '{{textDomain}}'),
 		fields: [
 			{
 				key: 'api_key',
 				type: 'text',
-				label: __( 'API Key', '{{textDomain}}' ),
+				label: __('API Key', '{{textDomain}}'),
 			},
 			{
 				key: 'enable_feature',
 				type: 'toggle',
-				label: __( 'Enable feature', '{{textDomain}}' ),
+				label: __('Enable feature', '{{textDomain}}'),
 			},
 			{
 				key: 'mode',
 				type: 'select',
-				label: __( 'Mode', '{{textDomain}}' ),
+				label: __('Mode', '{{textDomain}}'),
 				options: [
 					{
-						label: __( 'Simple', '{{textDomain}}' ),
+						label: __('Simple', '{{textDomain}}'),
 						value: 'simple',
 					},
 					{
-						label: __( 'Advanced', '{{textDomain}}' ),
+						label: __('Advanced', '{{textDomain}}'),
 						value: 'advanced',
 					},
 				],
@@ -79,40 +79,40 @@ const SECTIONS = [
 			{
 				key: 'accent_color',
 				type: 'color',
-				label: __( 'Accent color', '{{textDomain}}' ),
+				label: __('Accent color', '{{textDomain}}'),
 			},
 		],
 	},
 	{
 		name: 'advanced',
-		title: __( 'Advanced', '{{textDomain}}' ),
+		title: __('Advanced', '{{textDomain}}'),
 		fields: [
 			{
 				key: 'cache_ttl',
 				type: 'number',
-				label: __( 'Cache TTL (seconds)', '{{textDomain}}' ),
+				label: __('Cache TTL (seconds)', '{{textDomain}}'),
 			},
 			{
 				key: 'items_per_page',
 				type: 'range',
-				label: __( 'Items per page', '{{textDomain}}' ),
+				label: __('Items per page', '{{textDomain}}'),
 				min: 1,
 				max: 100,
 			},
 			{
 				key: 'active_window',
 				type: 'daterange',
-				label: __( 'Active period', '{{textDomain}}' ),
+				label: __('Active period', '{{textDomain}}'),
 			},
 			{
 				key: 'logo_id',
 				type: 'media',
-				label: __( 'Logo', '{{textDomain}}' ),
+				label: __('Logo', '{{textDomain}}'),
 			},
 			{
 				key: 'custom_css',
 				type: 'textarea',
-				label: __( 'Custom CSS', '{{textDomain}}' ),
+				label: __('Custom CSS', '{{textDomain}}'),
 				rows: 8,
 			},
 		],
@@ -120,122 +120,122 @@ const SECTIONS = [
 ];
 
 function SettingsApp() {
-	const [ settings, setSettings ] = useState( DEFAULTS );
-	const [ loading, setLoading ] = useState( true );
-	const [ saving, setSaving ] = useState( false );
-	const [ notice, setNotice ] = useState( null );
+	const [settings, setSettings] = useState(DEFAULTS);
+	const [loading, setLoading] = useState(true);
+	const [saving, setSaving] = useState(false);
+	const [notice, setNotice] = useState(null);
 
 	// Load current values once on mount.
-	useEffect( () => {
-		apiFetch( { path: '/wp/v2/settings' } )
-			.then( ( response ) => {
-				setSettings( {
+	useEffect(() => {
+		apiFetch({ path: '/wp/v2/settings' })
+			.then((response) => {
+				setSettings({
 					...DEFAULTS,
-					...( response[ OPTION_KEY ] || {} ),
-				} );
-			} )
-			.catch( () => {
-				setNotice( {
+					...(response[OPTION_KEY] || {}),
+				});
+			})
+			.catch(() => {
+				setNotice({
 					status: 'error',
 					message: __(
 						'Failed to load settings.',
 						'{{textDomain}}'
 					),
-				} );
-			} )
-			.finally( () => setLoading( false ) );
-	}, [] );
+				});
+			})
+			.finally(() => setLoading(false));
+	}, []);
 
 	// Update a single field in local state.
-	const update = ( key ) => ( value ) =>
-		setSettings( ( current ) => ( { ...current, [ key ]: value } ) );
+	const update = (key) => (value) =>
+		setSettings((current) => ({ ...current, [key]: value }));
 
 	const save = () => {
-		setSaving( true );
-		setNotice( null );
+		setSaving(true);
+		setNotice(null);
 
-		apiFetch( {
+		apiFetch({
 			path: '/wp/v2/settings',
 			method: 'POST',
-			data: { [ OPTION_KEY ]: settings },
-		} )
-			.then( ( response ) => {
-				setSettings( {
+			data: { [OPTION_KEY]: settings },
+		})
+			.then((response) => {
+				setSettings({
 					...DEFAULTS,
-					...( response[ OPTION_KEY ] || {} ),
-				} );
-				setNotice( {
+					...(response[OPTION_KEY] || {}),
+				});
+				setNotice({
 					status: 'success',
-					message: __( 'Settings saved.', '{{textDomain}}' ),
-				} );
-			} )
-			.catch( ( error ) => {
-				setNotice( {
+					message: __('Settings saved.', '{{textDomain}}'),
+				});
+			})
+			.catch((error) => {
+				setNotice({
 					status: 'error',
 					message:
 						error?.message ||
-						__( 'Failed to save settings.', '{{textDomain}}' ),
-				} );
-			} )
-			.finally( () => setSaving( false ) );
+						__('Failed to save settings.', '{{textDomain}}'),
+				});
+			})
+			.finally(() => setSaving(false));
 	};
 
-	if ( loading ) {
+	if (loading) {
 		return <Spinner />;
 	}
 
 	return (
 		<div className="stacker-settings">
-			<h1>{ __( 'Stacker Settings', '{{textDomain}}' ) }</h1>
+			<h1>{__('Stacker Settings', '{{textDomain}}')}</h1>
 
-			{ notice && (
+			{notice && (
 				<Notice
-					status={ notice.status }
-					onRemove={ () => setNotice( null ) }
+					status={notice.status}
+					onRemove={() => setNotice(null)}
 				>
-					{ notice.message }
+					{notice.message}
 				</Notice>
-			) }
+			)}
 
-			<TabPanel className="stacker-settings__tabs" tabs={ SECTIONS }>
-				{ ( tab ) => {
+			<TabPanel className="stacker-settings__tabs" tabs={SECTIONS}>
+				{(tab) => {
 					const section = SECTIONS.find(
-						( item ) => item.name === tab.name
+						(item) => item.name === tab.name
 					);
 
 					return (
 						<div className="stacker-settings__panel">
-							{ section.fields.map(
-								( { key, ...fieldProps } ) => (
-									<PanelRow key={ key }>
+							{section.fields.map(
+								({ key, ...fieldProps }) => (
+									<PanelRow key={key}>
 										<Field
-											{ ...fieldProps }
-											value={ settings[ key ] }
-											onChange={ update( key ) }
+											{...fieldProps}
+											value={settings[key]}
+											onChange={update(key)}
 										/>
 									</PanelRow>
 								)
-							) }
+							)}
 						</div>
 					);
-				} }
+				}}
 			</TabPanel>
 
 			<Button
 				variant="primary"
-				onClick={ save }
-				isBusy={ saving }
-				disabled={ saving }
+				onClick={save}
+				isBusy={saving}
+				disabled={saving}
 			>
-				{ __( 'Save settings', '{{textDomain}}' ) }
+				{__('Save settings', '{{textDomain}}')}
 			</Button>
 		</div>
 	);
 }
 
-domReady( () => {
-	const node = document.getElementById( 'stacker-settings-root' );
-	if ( node ) {
-		createRoot( node ).render( <SettingsApp /> );
+domReady(() => {
+	const node = document.getElementById('stacker-settings-root');
+	if (node) {
+		createRoot(node).render(<SettingsApp />);
 	}
-} );
+});

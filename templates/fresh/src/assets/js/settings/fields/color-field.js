@@ -23,47 +23,47 @@ import {
 import { __ } from '@wordpress/i18n';
 import { useInstanceId } from '@wordpress/compose';
 
-export default function ColorField( { label, value, onChange, help } ) {
-	const instanceId = useInstanceId( ColorField );
-	const id = `stacker-color-${ instanceId }`;
+export default function ColorField({ label, value, onChange, help }) {
+	const instanceId = useInstanceId(ColorField);
+	const id = `stacker-color-${instanceId}`;
 
 	return (
 		<BaseControl
-			id={ id }
-			label={ label }
-			help={ help }
+			id={id}
+			label={label}
+			help={help}
 			__nextHasNoMarginBottom
 		>
 			<div>
 				<Dropdown
-					popoverProps={ { placement: 'bottom-start' } }
-					renderToggle={ ( { isOpen, onToggle } ) => (
+					popoverProps={{ placement: 'bottom-start' }}
+					renderToggle={({ isOpen, onToggle }) => (
 						<Button
-							id={ id }
+							id={id}
 							variant="secondary"
-							onClick={ onToggle }
-							aria-expanded={ isOpen }
+							onClick={onToggle}
+							aria-expanded={isOpen}
 							__next40pxDefaultSize
 						>
-							<Flex gap={ 2 } align="center">
+							<Flex gap={2} align="center">
 								<FlexItem>
-									<ColorIndicator colorValue={ value } />
+									<ColorIndicator colorValue={value} />
 								</FlexItem>
 								<FlexItem>
-									{ value ||
+									{value ||
 										__(
 											'Select a color',
 											'{{textDomain}}'
-										) }
+										)}
 								</FlexItem>
 							</Flex>
 						</Button>
-					) }
-					renderContent={ () => (
+					)}
+					renderContent={() => (
 						<ColorPicker
-							color={ value }
-							enableAlpha={ false }
-							onChange={ ( color ) =>
+							color={value}
+							enableAlpha={false}
+							onChange={(color) =>
 								onChange(
 									'string' === typeof color
 										? color
@@ -71,7 +71,7 @@ export default function ColorField( { label, value, onChange, help } ) {
 								)
 							}
 						/>
-					) }
+					)}
 				/>
 			</div>
 		</BaseControl>
