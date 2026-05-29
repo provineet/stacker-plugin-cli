@@ -108,14 +108,14 @@ module.exports = {
 		{ value: 'localhost:10008', placeholder: '{{proxy}}' },
 
 		// --- requirements (only if your source pins these exact strings) ---
-		{ value: '', placeholder: '{{reqWP}}' }, // e.g. '5.3'
-		{ value: '', placeholder: '{{reqPHP}}' }, // e.g. '7.2'
+		{ value: '6.0', placeholder: '{{reqWP}}' }, // e.g. '5.3'
+		{ value: '8.1', placeholder: '{{reqPHP}}' }, // e.g. '7.2'
 
 		// --- generate-time computed tokens ---
 		// These are NOT stable strings in a normal working plugin; the generator
 		// derives them (see utils/generate.js). Leave empty and wire them in by
 		// hand if/where you need them in the template.
-		{ value: '', placeholder: '{{year}}' },
+		{ value: '2026', placeholder: '{{year}}' },
 		{ value: '', placeholder: '{{packageBuildCommand}}' },
 		{ value: '', placeholder: '{{pluginSupports}}' },
 		{ value: '', placeholder: '{{assetsFolder}}' }

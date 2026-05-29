@@ -80,8 +80,8 @@ module.exports = async userInputs => {
 	const assetsFolder =  userInputs.blocks === 'Yes' ? `'../assets/js/' + ` : '';
 
 	userInputs = {
-		reqWP: '5.3',
-		reqPHP: '7.2',
+		reqWP: '6.0',
+		reqPHP: '8.1',
 		year: new Date().getFullYear(),
 		packageBuildCommand,
 		pluginSupports,
