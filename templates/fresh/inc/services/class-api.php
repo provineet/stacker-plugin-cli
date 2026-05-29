@@ -1,23 +1,38 @@
 <?php
 /**
- * Public class
+ * API service
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
 
-//  phpcs:ignore
+declare(strict_types=1);
+
 namespace {{namespace}}\SERVICES;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
- * Undocumented class
+ * Service for registering this plugin's REST API routes.
  */
-class API {
+final class API {
 
 	/**
-	 * Undocumented function
+	 * REST namespace for this plugin's routes.
+	 *
+	 * @var string
 	 */
-	public function __construct() {
-		echo 'CLASS API CREATED';
+	private const REST_NAMESPACE = 'stacker/v1';
+
+	/**
+	 * Hooks the route registration onto the REST API init action.
+	 *
+	 * @return void
+	 */
+	public function register_routes(): void {
+		// Example: hook a `register()` method that calls register_rest_route()
+		// onto the rest_api_init action, using self::REST_NAMESPACE.
 	}
 }

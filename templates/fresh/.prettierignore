@@ -1,0 +1,12 @@
+# Don't format dependencies, downloaded WordPress core, or build output.
+/node_modules/
+/vendor/
+/wordpress/
+/blocks/
+/assets/
+/dist/
+/dev-dist/
+/.claude/
+*.min.js
+package-lock.json
+composer.lock

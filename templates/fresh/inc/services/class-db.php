@@ -1,23 +1,41 @@
 <?php
 /**
- * Public class
+ * Database service
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
 
-//  phpcs:ignore
+declare(strict_types=1);
+
 namespace {{namespace}}\SERVICES;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
- * Undocumented class
+ * Thin wrapper around $wpdb for the plugin's database access.
+ *
+ * Centralising $wpdb here keeps prepared statements and table naming in one
+ * place — never concatenate untrusted input into SQL; always use
+ * `$this->wpdb->prepare()`.
  */
-class DB {
+final class DB {
 
 	/**
-	 * Undocumented function
+	 * WordPress database abstraction object.
+	 *
+	 * @var \wpdb
+	 */
+	private readonly \wpdb $wpdb;
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
-		echo 'CLASS DB CREATED';
+		global $wpdb;
+
+		$this->wpdb = $wpdb;
 	}
 }

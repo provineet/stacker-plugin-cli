@@ -1,23 +1,36 @@
 <?php
 /**
- * Public class
+ * User repository
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
 
-//  phpcs:ignore
+declare(strict_types=1);
+
 namespace {{namespace}}\REPOSITORIES;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
- * Undocumented class
+ * Repository for reading and writing user data.
+ *
+ * Keeps all user-related data access in one place so the rest of the plugin
+ * never talks to WordPress user APIs directly.
  */
-class User {
+final class User {
 
 	/**
-	 * Undocumented function
+	 * Finds a user by ID.
+	 *
+	 * @param int $user_id User ID.
+	 * @return \WP_User|null The user, or null when not found.
 	 */
-	public function __construct() {
-		echo 'CLASS USER CREATED';
+	public function find( int $user_id ): ?\WP_User {
+		$user = get_user_by( 'id', $user_id );
+
+		return $user instanceof \WP_User ? $user : null;
 	}
 }

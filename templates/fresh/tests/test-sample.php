@@ -2,8 +2,7 @@
 /**
  * Class SampleTest
  *
- * @package {{packageName}}
- * @since {{version}}
+ * @package {{packageName}}_Boilerplate
  */
 
 /**
