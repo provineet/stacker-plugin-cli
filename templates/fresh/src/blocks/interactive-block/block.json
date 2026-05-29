@@ -1,0 +1,24 @@
+{
+	"apiVersion": 3,
+	"name": "stacker/interactive-block",
+	"title": "Interactive Example Block",
+	"description": "Front-end interactivity (a live counter) powered by the WordPress Interactivity API.",
+	"icon": "controls-play",
+	"category": "{{textDomain}}-category",
+	"keywords": [ "stacker", "interactivity", "counter" ],
+	"textdomain": "stacker-plugin-boilerplate",
+	"supports": {
+		"interactivity": true
+	},
+	"attributes": {
+		"start": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "file:index.js",
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css",
+	"viewScriptModule": "file:view.js",
+	"render": "file:render.php"
+}

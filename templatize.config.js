@@ -29,7 +29,15 @@ module.exports = {
 	// Kept separate from templates/ so you can review before copying it in.
 	dest: './templatized-output',
 
-	// Directory/file names skipped entirely when copying & scanning.
+	// Names/paths skipped entirely when copying & scanning. Matched like
+	// excludeFromConversion, with one addition — a leading '/' ANCHORS to the
+	// plugin root:
+	//   - bare name (no slash)    -> matches that name ANYWHERE (e.g. every
+	//                                 nested node_modules / .git)
+	//   - '/name' or '/a/b'       -> matches ONLY at the plugin root (and its
+	//                                 subtree), so '/assets' ignores the root
+	//                                 build dir but KEEPS src/assets
+	//   - 'a/b' (slash, no '/')   -> exact relative path or its subtree
 	ignore: [
 		'node_modules',
 		'.git',
@@ -37,13 +45,13 @@ module.exports = {
 		'build',
 		'dist',
 		'dev-dist',
-		'assets', // generated build output (src/assets is kept)
-		'blocks', // generated block build output (src/blocks is kept)
+		'/assets', // root build output only — src/assets is kept
+		'/blocks', // root build output only — src/blocks is kept
 		'.DS_Store',
 		'.agents',
 		'.claude',
 		'CLAUDE.md',
-		'wordpress',,
+		'wordpress',
 		'todo',
 	],
 

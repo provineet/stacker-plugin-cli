@@ -1,0 +1,23 @@
+{
+	"apiVersion": 3,
+	"name": "stacker/dynamic-block",
+	"title": "Dynamic Example Block",
+	"description": "A server-rendered (dynamic) block. Its markup is produced by render.php on every request, so it always reflects live data.",
+	"icon": "update",
+	"category": "{{textDomain}}-category",
+	"keywords": [ "stacker", "dynamic", "server" ],
+	"textdomain": "stacker-plugin-boilerplate",
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": "Published posts"
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "file:index.js",
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css",
+	"render": "file:render.php"
+}

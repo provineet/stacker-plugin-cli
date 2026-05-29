@@ -52,13 +52,33 @@ Edit ${c('templatize.config.js')} to change or add literals.
 const escapeRegExp = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // --- file walk ---------------------------------------------------------
-const ignoreNames = new Set(config.ignore || []);
+// Ignore entries (skip false/holey entries from a stray comma in the config):
+//   '/name' or '/a/b' -> anchored to the plugin ROOT (root build dirs only)
+//   'a/b'  (has slash) -> exact relative path or its subtree
+//   'name' (bare)      -> matched ANYWHERE by that path segment
+const ignoreEntries = (config.ignore || [])
+	.filter(Boolean)
+	.map(e => e.replace(/\/+$/, ''));
 
-function walk(dir, files = []) {
+function isIgnored(absPath, root) {
+	if (!ignoreEntries.length) return false;
+	const rel = path.relative(root, absPath).split(path.sep).join('/');
+	const segments = rel.split('/');
+	return ignoreEntries.some(e => {
+		if (e.startsWith('/')) {
+			const a = e.slice(1);
+			return rel === a || rel.startsWith(a + '/'); // anchored to root
+		}
+		if (e.includes('/')) return rel === e || rel.startsWith(e + '/');
+		return segments.includes(e); // bare name, anywhere
+	});
+}
+
+function walk(dir, root = dir, files = []) {
 	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-		if (ignoreNames.has(entry.name)) continue;
 		const full = path.join(dir, entry.name);
-		if (entry.isDirectory()) walk(full, files);
+		if (isIgnored(full, root)) continue;
+		if (entry.isDirectory()) walk(full, root, files);
 		else if (entry.isFile()) files.push(full);
 	}
 	return files;
@@ -77,9 +97,8 @@ function isTextFile(file) {
 	}
 }
 
-function cpFilter(src) {
-	return !ignoreNames.has(path.basename(src));
-}
+// cpSync filter: skip ignored paths, evaluated relative to the source root.
+const makeCpFilter = root => srcPath => !isIgnored(srcPath, root);
 
 // Files to copy verbatim (skip both content replacement and renaming).
 // Entries are exact paths / basenames (not full globs). Normalize away a
@@ -155,7 +174,7 @@ function main() {
 	// 1) copy (skip in dry run) -----------------------------------------
 	if (!args.dry) {
 		if (fs.existsSync(dest)) fs.rmSync(dest, { recursive: true, force: true });
-		fs.cpSync(src, dest, { recursive: true, filter: cpFilter });
+		fs.cpSync(src, dest, { recursive: true, filter: makeCpFilter(src) });
 	}
 
 	// Scan target (dest if copied, else read-only from src).
@@ -197,7 +216,7 @@ function main() {
 	// 4) rename files & folders -----------------------------------------
 	// Deepest-first so renaming a child never invalidates a parent's path.
 	const renames = [];
-	const allPaths = walkAll(scanRoot).sort((a, b) => b.length - a.length);
+	const allPaths = walkAll(scanRoot, scanRoot).sort((a, b) => b.length - a.length);
 	for (const p of allPaths) {
 		if (isVerbatim(p, scanRoot)) continue; // leave verbatim files/folders unrenamed
 		const base = path.basename(p);
@@ -275,12 +294,12 @@ function main() {
 }
 
 // walk including directories (for renames)
-function walkAll(dir, out = []) {
+function walkAll(dir, root = dir, out = []) {
 	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-		if (ignoreNames.has(entry.name)) continue;
 		const full = path.join(dir, entry.name);
+		if (isIgnored(full, root)) continue;
 		out.push(full);
-		if (entry.isDirectory()) walkAll(full, out);
+		if (entry.isDirectory()) walkAll(full, root, out);
 	}
 	return out;
 }
