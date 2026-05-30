@@ -75,9 +75,7 @@ module.exports = {
 		'readme.txt',
 		'readme.md',
 		'docker-compose.yaml',
-		'docker-configs/**',
-		'package.json',
-		'composer.json'
+		'docker-configs/**'
 	],
 
 	// value (in your working plugin)  ->  placeholder (token in templates/)

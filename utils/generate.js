@@ -1,15 +1,11 @@
 const fs = require('fs');
 const ora = require('ora');
 const path = require('path');
-const { promisify } = require('util');
-const copy = require('copy-template-dir');
+const copyDir = require('./copydir');
 const shouldCancel = require('cli-should-cancel');
 const { green: g, dim: d, red: r, yellow: y } = require('chalk');
 const { choice } = require('./ask');
 const spinner = ora({ text: '' });
-
-// copy-template-dir is callback-based; promisify so we can await each copy.
-const copyDir = promisify(copy);
 
 const setDirectories = async (userInputs, pluginFolder = null) => {
 	const outDirName =
