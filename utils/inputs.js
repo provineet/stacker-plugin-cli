@@ -16,15 +16,8 @@ function strToCamelCase(str) {
 
 const inputs = async () => {
 
-	// fresh plugin, or layer the tooling onto an existing plugin?
-	const installType = await choice({
-		message: 'Are you starting a fresh plugin or integrating into an existing plugin?',
-		choices: ['Fresh install', 'Existing plugin'],
-	});
-	const isExisting = installType === 'Existing plugin';
-
 	// take user inputs
-	const userInputs = await collectInputs(isExisting);
+	const userInputs = await collectInputs();
 
 	// take confirmation on the user inputs
 	const confirmInputs = await confirm({
@@ -53,7 +46,7 @@ const inputs = async () => {
 	}
 };
 
-const collectInputs = async (isExisting = false) => {
+const collectInputs = async () => {
 
 	const blocks = await choice({
 		message: 'Is your plugin registers Gutenberg blocks?',
@@ -73,16 +66,11 @@ const collectInputs = async (isExisting = false) => {
 		validate,
 		initial: 'Plugin Name'
 	});
-	// Version lives in the main plugin file's header, which existing-plugin
-	// integrations don't generate. A falsy version also routes generate.js to
-	// the 'existing' template (see setDirectories).
-	const version = isExisting
-		? undefined
-		: await simpleText({
-				message: 'Plugin Version',
-				validate: validations.version,
-				initial: pkg.version
-		  });
+	const version = await simpleText({
+		message: 'Plugin Version',
+		validate: validations.version,
+		initial: pkg.version
+	});
 	const textDomain = await simpleText({
 		message: "Your plugin's text domain",
 		hint: null,
@@ -139,14 +127,10 @@ const collectInputs = async (isExisting = false) => {
 	});
 
 	console.log(`
-    ${y(
-		isExisting
-			? `Integrating Stacker tooling into your existing plugin.`
-			: `Configuring a fresh installation of Stacker Plugin Boilerplate.`
-	)}}
+    ${y(`Configuring a fresh installation of Stacker Plugin Boilerplate.`)}
 
-    ${d(`Plugin Name`)}: ${b(pluginName)}${isExisting ? '' : `
-    ${d(`Version`)}: ${b(version)}`}
+    ${d(`Plugin Name`)}: ${b(pluginName)}
+    ${d(`Version`)}: ${b(version)}
     ${d(`Text Domain`)}: ${b(textDomain)}
     ${d(`Function Prefix`)}: ${b(prefix)}
     ${d(`Plugin Url`)}: ${b(pluginUrl)}

@@ -12,16 +12,8 @@ const setDirectories = async (userInputs, pluginFolder = null) => {
 		pluginFolder == null
 			? userInputs.pluginFileName
 			: pluginFolder;
-	let inDirPath = '',
-		outDirPath = '';
-	// version is available only in fresh installations
-	if (userInputs.version) {
-		outDirPath = path.join(process.cwd(), outDirName);
-		inDirPath = path.join(__dirname, '../', 'templates/fresh');
-	} else {
-		outDirPath = process.cwd();
-		inDirPath = path.join(__dirname, '../', 'templates/existing');
-	}
+	const outDirPath = path.join(process.cwd(), outDirName);
+	const inDirPath = path.join(__dirname, '../', 'templates/fresh');
 
 	return [inDirPath, outDirPath, outDirName];
 };
@@ -37,25 +29,7 @@ const confirmOverwrite = async message => {
 	proceed === 'Cancel' && shouldCancel();
 };
 
-const checkFolder = async (userInputs, outDirPath, outDirName) => {
-	// Existing-plugin integration: files are written into the current folder, so
-	// it always exists. Warn only about the tooling files we'd overwrite.
-	if (!userInputs.version) {
-		const conflicts = ['package.json', 'composer.json'].filter(file =>
-			fs.existsSync(path.join(outDirPath, file))
-		);
-
-		if (conflicts.length) {
-			await confirmOverwrite(
-				`${r(
-					`\n\n${conflicts.join(' and ')} already exist in your plugin's folder. `
-				)}\n${y(`Choose Overwrite to replace them | Cancel to bail out.`)}`
-			);
-		}
-
-		return;
-	}
-
+const checkFolder = async (outDirPath, outDirName) => {
 	// Fresh install: the plugin lives in its own new subfolder.
 	if (fs.existsSync(outDirPath)) {
 		await confirmOverwrite(
@@ -89,7 +63,7 @@ module.exports = async userInputs => {
 	const [inDirPath, outDirPath, outDirName] = await setDirectories(userInputs);
 
 	// check if the plugin folder or files already exists in the current working directory.
-	await checkFolder(userInputs, outDirPath, outDirName);
+	await checkFolder(outDirPath, outDirName);
 
 	console.log();
 	spinner.start(`${y(`Generating your plugin files...\n`)}`);
