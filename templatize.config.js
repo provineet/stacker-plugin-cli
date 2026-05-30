@@ -99,16 +99,17 @@ module.exports = {
 		{ value: 'https://blogohblog.com', placeholder: '{{authorUrl}}' },
 		{ value: 'you@example.com', placeholder: '{{authorEmail}}' },
 		{ value: 'https://blogohblog.com', placeholder: '{{pluginUrl}}' },
-
+		
 		// --- meta ---
 		{ value: 'A modern WordPress Plugin Development boilerplate for your next awesome project.', placeholder: '{{description}}' },
 		{ value: 'GPL-2.0-or-later', placeholder: '{{license}}' },
 		{ value: '1.0.0', placeholder: '{{version}}' },
 		{ value: 'localhost:10008', placeholder: '{{proxy}}' },
+		{ value: '10008:80', placeholder: '{{wp_port}}:80' },
 
 		// --- requirements (only if your source pins these exact strings) ---
-		{ value: '6.0', placeholder: '{{reqWP}}' }, // e.g. '5.3'
-		{ value: '8.1', placeholder: '{{reqPHP}}' }, // e.g. '7.2'
+		// { value: '6.0', placeholder: '{{reqWP}}' }, // e.g. '5.3'
+		// { value: '8.1', placeholder: '{{reqPHP}}' }, // e.g. '7.2'
 
 		// --- generate-time computed tokens ---
 		// These are NOT stable strings in a normal working plugin; the generator

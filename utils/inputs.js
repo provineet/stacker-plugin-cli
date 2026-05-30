@@ -48,6 +48,10 @@ const inputs = async () => {
 
 const collectInputs = async () => {
 
+	const devEnv = await choice({
+		message: 'Which of the following development environment you are using?',
+		choices: ['Docker Desktop', 'LocalWP'],
+	});
 	const blocks = await choice({
 		message: 'Is your plugin registers Gutenberg blocks?',
 		choices: ['Yes', 'No'],
@@ -55,10 +59,6 @@ const collectInputs = async () => {
 	const phpUnit = await choice({
 		message: 'Configure PHPUnit?',
 		choices: ['Yes', 'No'],
-	});
-	const devEnv = await choice({
-		message: 'Which of the following development environment you are using?',
-		choices: ['Docker Desktop', 'LocalWP'],
 	});
 	const pluginName = await simpleText({
 		message: 'Name of your Plugin?',

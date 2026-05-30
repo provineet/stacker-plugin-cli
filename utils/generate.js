@@ -93,18 +93,23 @@ const disableBlocksConstant = (pluginFilePath, constantPrefix) => {
 
 module.exports = async userInputs => {
 
+	// When using Docker Desktop, pull the port out of the proxy (e.g. "localhost:8080" -> "8080").
+	const port =
+		userInputs.devEnv === 'Docker Desktop'
+			? userInputs.proxy.split(':').pop()
+			: undefined;
+
 	// Adds/Remove Gutenberg Blocks Support
 	const packageBuildCommand = userInputs.blocks === 'No' ? 'js' : 'js:blocks';
 	const pluginSupports = userInputs.blocks === 'Yes' ? `['blocks']` : '[]';
 	const assetsFolder =  userInputs.blocks === 'Yes' ? `'../assets/js/' + ` : '';
 
 	userInputs = {
-		reqWP: '6.0',
-		reqPHP: '8.1',
 		year: new Date().getFullYear(),
 		packageBuildCommand,
 		pluginSupports,
 		assetsFolder,
+		wp_port: port ? port : userInputs.proxy,
 		...userInputs
 	};
 
