@@ -1,10 +1,10 @@
 {
-	"name": "{{textDomain}}",
-	"version": "{{version}}",
-	"description": "{{description}}",
+	"name": "stacker-plugin-boilerplate",
+	"version": "1.0.0",
+	"description": "A modern WordPress Plugin Development boilerplate for your next awesome project.",
 	"main": "index.js",
 	"files": [
-		"{{pluginFileName}}.php",
+		"stacker-wordpress-plugin-boilerplate.php",
 		"index.php",
 		"inc",
 		"blocks",
@@ -34,10 +34,10 @@
 	},
 	"keywords": [
 		"WordPress Plugin",
-		"{{name}}"
+		"Stacker Boilerplate Plugin"
 	],
-	"author": "{{authorName}}",
-	"license": "{{license}}",
+	"author": "Vineet Verma",
+	"license": "GPL-2.0-or-later",
 	"prettier": "@wordpress/prettier-config",
 	"stylelint": {
 		"extends": "@wordpress/stylelint-config/scss"
@@ -50,6 +50,12 @@
 		"*.scss": "npx stylelint --fix",
 		"*.php": "composer run phpcs"
 	},
+	"overrides": {
+		"glob": "$glob",
+		"uuid": "^11.1.0",
+		"source-map-loader": "^5.0.0",
+		"webpack-dev-server": "^5.2.4"
+	},
 	"devDependencies": {
 		"@wordpress/eslint-plugin": "^25.3.0",
 		"@wordpress/prettier-config": "^4.47.0",
@@ -58,7 +64,7 @@
 		"browser-sync": "^3.0.4",
 		"concurrently": "^10.0.0",
 		"cross-env": "^10.1.0",
-		"glob": "^10.3.10",
+		"glob": "^13.0.6",
 		"husky": "^9.1.7",
 		"lint-staged": "^17.0.5",
 		"prettier": "npm:wp-prettier@^3.0.3",

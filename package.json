@@ -36,7 +36,7 @@
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write \"./**/*.{js,json}\"",
-    "templatize": "node utils/templatize.js",
+    "templatize": "rm -rf templates/fresh && node utils/templatize.js",
     "test": "jest"
   },
   "dependencies": {

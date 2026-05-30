@@ -27,7 +27,7 @@
 module.exports = {
 	// Where templatized output is written. Override with --dest.
 	// Kept separate from templates/ so you can review before copying it in.
-	dest: './templatized-output',
+	dest: './templates/fresh',
 
 	// Names/paths skipped entirely when copying & scanning. Matched like
 	// excludeFromConversion, with one addition — a leading '/' ANCHORS to the
@@ -53,6 +53,10 @@ module.exports = {
 		'CLAUDE.md',
 		'wordpress',
 		'todo',
+		'package-lock.json',
+		'yarn.lock',
+		'composer.lock',
+		'skills-lock.json'
 	],
 
 	// Files COPIED VERBATIM — copied into the output untouched, but skipped from
@@ -72,6 +76,8 @@ module.exports = {
 		'readme.md',
 		'docker-compose.yaml',
 		'docker-configs/**',
+		'package.json',
+		'composer.json'
 	],
 
 	// value (in your working plugin)  ->  placeholder (token in templates/)

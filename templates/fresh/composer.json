@@ -1,21 +1,21 @@
 {
-	"name": "vineet/{{textDomain}}",
-	"description": "{{description}}",
+	"name": "vineet/stacker-plugin-boilerplate",
+	"description": "A modern WordPress Plugin Development boilerplate for your next awesome project.",
 	"type": "project",
-	"license": "{{license}}",
+	"license": "GPL-2.0-or-later",
 	"autoload": {
 		"psr-4": {
-			"{{constantPrefix}}\\": "inc/"
+			"STACKER_PLUGIN\\": "inc/"
 		}
 	},
 	"authors": [
 		{
-			"name": "{{authorName}}",
+			"name": "Vineet Verma",
 			"email": "vineet@blogohblog.com"
 		}
 	],
 	"require": {
-		"php": ">={{reqPHP}}"
+		"php": ">=8.1"
 	},
 	"require-dev": {
 		"wp-coding-standards/wpcs": "^3.3",
@@ -33,7 +33,7 @@
 	},
 	"config": {
 		"platform": {
-			"php": "{{reqPHP}}"
+			"php": "8.1"
 		},
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
