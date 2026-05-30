@@ -42,6 +42,55 @@ const checkFolder = async (outDirPath, outDirName) => {
 	}
 };
 
+// Strip Gutenberg block build/start commands from a generated package.json.
+const removeBlockBuildCommands = pkgPath => {
+	if (!fs.existsSync(pkgPath)) {
+		return;
+	}
+
+	const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+	const scripts = pkg.scripts || {};
+
+	// drop the standalone block scripts (e.g. build:blocks, start:blocks).
+	for (const name of Object.keys(scripts)) {
+		if (name.endsWith(':blocks')) {
+			delete scripts[name];
+		}
+	}
+
+	// drop references to the removed block scripts from aggregate scripts
+	// and tidy up the leftover whitespace from `concurrently`.
+	for (const [name, command] of Object.entries(scripts)) {
+		scripts[name] = command
+			.replace(/"npm:[\w-]+:blocks"\s*/g, '')
+			.replace(/\s{2,}/g, ' ')
+			.trim();
+	}
+
+	// the `blocks` output directory is no longer built, so don't ship it.
+	if (Array.isArray(pkg.files)) {
+		pkg.files = pkg.files.filter(file => file !== 'blocks');
+	}
+
+	fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, '\t') + '\n');
+};
+
+// Flip the `<PREFIX>_BLOCKS` define to false so the main plugin file skips
+// registering gutenberg blocks when the plugin doesn't ship any.
+const disableBlocksConstant = (pluginFilePath, constantPrefix) => {
+	if (!fs.existsSync(pluginFilePath)) {
+		return;
+	}
+
+	const contents = fs.readFileSync(pluginFilePath, 'utf8');
+	const updated = contents.replace(
+		new RegExp(`(define\\(\\s*'${constantPrefix}_BLOCKS'\\s*,\\s*)true(\\s*\\))`),
+		'$1false$2'
+	);
+
+	fs.writeFileSync(pluginFilePath, updated);
+};
+
 module.exports = async userInputs => {
 
 	// Adds/Remove Gutenberg Blocks Support
@@ -75,6 +124,11 @@ module.exports = async userInputs => {
 		// remove src/blocks if the plugin isn't going to register gutenberg blocks.
 		if (userInputs.blocks === 'No') {
 			fs.rmSync(path.join(outDirPath, 'src/blocks'), { recursive: true, force: true });
+			removeBlockBuildCommands(path.join(outDirPath, 'package.json'));
+			disableBlocksConstant(
+				path.join(outDirPath, `${userInputs.pluginFileName}.php`),
+				userInputs.constantPrefix
+			);
 		}
 
 		// remove docker files if devEnv is LocalWP.
