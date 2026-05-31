@@ -4,11 +4,11 @@ import './editor.scss';
 
 export default function Edit() {
 	return (
-		<p { ...useBlockProps() }>
-			{ __(
+		<p {...useBlockProps()}>
+			{__(
 				'Stacker Boilerplate – hello from the second block editor!',
-				'stacker-boilerplate'
-			) }
+				'{{textDomain}}'
+			)}
 		</p>
 	);
 }

@@ -20,15 +20,15 @@ import { useBlockProps } from '@wordpress/block-editor';
  *
  * @see https://developer.wordpress.org/block-editor/developers/block-api/block-edit-save/#save
  *
- * @return {JSX} Element to render.
+ * @return {Element} Element to render.
  */
 export default function save() {
 	return (
-		<p { ...useBlockProps.save() }>
-			{ __(
+		<p {...useBlockProps.save()}>
+			{__(
 				'Stacker Boilerplate – hello from the second block content!',
-				'stacker-boilerplate'
-			) }
+				'{{textDomain}}'
+			)}
 		</p>
 	);
 }

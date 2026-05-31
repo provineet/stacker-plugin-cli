@@ -4,7 +4,7 @@ import save from './save';
 // import { __ } from '@wordpress/i18n';
 import './style.scss';
 
-registerBlockType( 'stacker/second-block', {
+registerBlockType('{{blockNamespace}}/second-block', {
 	edit: Edit,
 	save,
-} );
+});

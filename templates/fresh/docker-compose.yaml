@@ -1,67 +1,90 @@
-version: '3.1'
-
 services:
-  wordpress:
-    build:
-      context: .
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: wpuser
-      WORDPRESS_DB_PASSWORD: dbpass
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DEBUG: 1
-    volumes:
-      - wordpress:/var/www/html
-      - .:/var/www/html/wp-content/plugins/{{pluginFileName}}
-    networks:
-      {{pluginFileName}}-network:
+    wordpress:
+        build:
+            context: .
+        restart: always
+        ports:
+            - 10008:80
+        environment:
+            WORDPRESS_DB_HOST: db
+            WORDPRESS_DB_USER: wpuser
+            WORDPRESS_DB_PASSWORD: dbpass
+            WORDPRESS_DB_NAME: wordpress
+            WORDPRESS_DEBUG: 1
+            WORDPRESS_CONFIG_EXTRA: |
+                define( 'WP_DEBUG_LOG', true );
+                define( 'WP_DEBUG_DISPLAY', false );
+        # Lets Xdebug reach the host IDE. REQUIRED on Linux/WSL2, where
+        # host.docker.internal is not resolvable by default. Harmless no-op on
+        # Docker Desktop for Mac/Windows (which already provide that hostname),
+        # so it is safe to leave enabled on every OS.
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - wordpress:/var/www/html
+            - .:/var/www/html/wp-content/plugins/stacker-boilerplate
+            # Dev-only must-use plugin: fixes the invalid "wordpress@localhost"
+            # From address that otherwise makes every wp_mail() fail. See the
+            # file header for the full explanation.
+            - ./docker-configs/mu-plugins/dev-mail.php:/var/www/html/wp-content/mu-plugins/dev-mail.php
+        networks:
+            stacker-plugin:
 
+    db:
+        image: mariadb:jammy
+        restart: always
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MARIADB_DATABASE: wordpress
+            MARIADB_USER: wpuser
+            MARIADB_PASSWORD: dbpass
+            MARIADB_ROOT_PASSWORD: root
+        ports:
+            - 3308:3306
+        volumes:
+            - mariadb:/var/lib/mysql
+            - ./docker-configs/init:/docker-entrypoint-initdb.d
+        networks:
+            stacker-plugin:
 
-  db:
-    image: mariadb:jammy
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MARIADB_DATABASE: wordpress
-      MARIADB_USER: wpuser
-      MARIADB_PASSWORD: dbpass
-      MARIADB_ROOT_PASSWORD: root
-    ports:
-      - 3308:3306
-    volumes:
-      - mariadb:/var/lib/mysql
-      - ./docker-configs/init:/docker-entrypoint-initdb.d
-    networks:
-      {{pluginFileName}}-network:
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8082:8080
+        networks:
+            stacker-plugin:
 
+    # Catches all outgoing mail (PHP mail() is routed here via msmtp — see
+    # docker-configs/sendmail.ini). Mailpit ships native amd64 AND arm64 images,
+    # so it runs without emulation on Apple Silicon, Intel Mac, Windows, Linux
+    # and WSL2 alike. Web UI: http://localhost:8025  (SMTP on 1025).
+    mailpit:
+        image: axllent/mailpit
+        restart: always
+        ports:
+            - 8026:8025
+            - 1026:1025
+        networks:
+            stacker-plugin:
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8082:8080
-    networks:
-      {{pluginFileName}}-network:
-
-
-  mailcatcher:
-    image: dockage/mailcatcher
-    platform: linux/x86_64
-    restart: always
-    ports:
-      - 1080:1080
-      - 1025:1025
-    networks:
-      {{pluginFileName}}-network:
-
+    # Prefer the original mailcatcher? It is amd64-only, so on Apple Silicon it
+    # runs under (slower) emulation and needs the platform pin below. If you
+    # enable this, disable the mailpit service above, change the SMTP --host in
+    # docker-configs/sendmail.ini back to "mailcatcher", and use the UI on :1080.
+    # mailcatcher:
+    #     image: dockage/mailcatcher
+    #     platform: linux/amd64
+    #     restart: always
+    #     ports:
+    #         - 1080:1080
+    #         - 1025:1025
+    #     networks:
+    #         stacker-plugin:
 
 volumes:
-  wordpress:
-  mariadb:
-
+    wordpress:
+    mariadb:
 
 networks:
-  {{pluginFileName}}-network:
+    stacker-plugin:

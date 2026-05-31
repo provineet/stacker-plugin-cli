@@ -3,21 +3,30 @@
  * Admin class
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
+
+declare(strict_types=1);
 
 namespace {{namespace}}\ADMIN;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
- * Undocumented class
+ * Entry point for all admin-side functionality.
  */
-class Admin {
+final class Admin {
 
 	/**
-	 * Undocumented function
+	 * Constructor.
+	 *
+	 * @param Hooks         $hooks         Admin hooks handler.
+	 * @param Settings_Page $settings_page Settings page (admin menu + assets).
 	 */
-	public function __construct() {
-		// registering admin hooks.
-		$hooks = new Hooks();
-	}
+	public function __construct(
+		private readonly Hooks $hooks = new Hooks(),
+		private readonly Settings_Page $settings_page = new Settings_Page()
+	) {}
 }

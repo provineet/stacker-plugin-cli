@@ -1,3 +1,7 @@
-.first-block {
-	font-size: 12px;
+.wp-block-stacker {
+
+	&-second-block {
+		font-size: 24px;
+		color: #c00;
+	}
 }

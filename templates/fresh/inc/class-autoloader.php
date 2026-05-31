@@ -3,8 +3,10 @@
  * Special Class Autoloader
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
+
+declare(strict_types=1);
 
 namespace {{namespace}};
 
@@ -13,50 +15,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Autoloader Class
+ * PSR-style autoloader that maps namespaced class names to WordPress-style
+ * `class-{name}.php` files under the plugin's `inc` directory.
  */
-class Autoloader {
+final class Autoloader {
 
 	/**
-	 * Holds map of the classes
+	 * Holds map of the classes.
 	 *
-	 * @var array
-	 */
-	private static $classes_map;
-
-	/**
-	 * Default path to the classes folder
+	 * Keys are class names relative to the default namespace; values are paths
+	 * relative to the default path.
 	 *
-	 * @var string
+	 * @var array<string, string>|null
 	 */
-	private static $default_path;
+	private static ?array $classes_map = null;
 
 	/**
-	 * Default namespace for the classes
+	 * Default path to the classes folder.
 	 *
 	 * @var string
 	 */
-	private static $default_namespace;
+	private static string $default_path = '';
+
+	/**
+	 * Default namespace for the classes.
+	 *
+	 * @var string
+	 */
+	private static string $default_namespace = '';
 
 	/**
 	 * Registers Special Autoloader.
 	 *
 	 * Register a function as `__autoload()` implementation.
 	 *
-	 * @param   string $default_path       path of the classes folder.
-	 * @param   string $default_namespace  default namespace.
+	 * @param string $default_path      path of the classes folder.
+	 * @param string $default_namespace default namespace.
 	 */
-	public static function run( $default_path = '', $default_namespace = '' ) {
-		if ( '' === $default_path ) {
-			$default_path = {{constantPrefix}}_PATH . 'inc/';
-		}
-
-		if ( '' === $default_namespace ) {
-			$default_namespace = __NAMESPACE__;
-		}
-
-		self::$default_path      = $default_path;
-		self::$default_namespace = $default_namespace;
+	public static function run( string $default_path = '', string $default_namespace = '' ): void {
+		self::$default_path      = '' === $default_path ? {{constantPrefix}}_PATH . 'inc/' : trailingslashit( $default_path );
+		self::$default_namespace = '' === $default_namespace ? __NAMESPACE__ : $default_namespace;
 
 		spl_autoload_register( array( __CLASS__, 'autoload' ) );
 	}
@@ -64,48 +62,47 @@ class Autoloader {
 	/**
 	 * Returns the classes map.
 	 *
-	 * @return  array  classes map
+	 * @return array<string, string> classes map.
 	 */
-	public static function get_classes_map() {
-		if ( ! self::$classes_map ) {
-			self::init_classes_map();
-		}
-
-		return self::$classes_map;
+	public static function get_classes_map(): array {
+		return self::$classes_map ??= self::init_classes_map();
 	}
 
 	/**
-	 * Initializes a classes map
+	 * Initializes a classes map.
+	 *
+	 * @return array<string, string>
 	 */
-	private static function init_classes_map() {
-		self::$classes_map = array(
-			// Your classmap entry goes here.
+	private static function init_classes_map(): array {
+		return array(
+			// Your classmap entry goes here, e.g. 'ADMIN\Admin' => 'admin/class-admin.php'.
 		);
 	}
 
 	/**
 	 * Load class.
 	 *
-	 * For a given class name, require the class file.
+	 * For a given class name (relative to the default namespace), require the
+	 * class file.
 	 *
-	 * @since  1.0.0
+	 * @since  {{version}}
 	 * @access private
 	 * @static
 	 *
-	 * @param string $namespaced_class_name Class name with namespaced path.
+	 * @param string $relative_class_name Class name relative to the default namespace.
 	 */
-	private static function load_class( $namespaced_class_name ) {
+	private static function load_class( string $relative_class_name ): void {
 
 		$classes_map = self::get_classes_map();
 
-		if ( isset( $classes_map[ $namespaced_class_name ] ) ) {
-			$filename = self::$default_path . DIRECTORY_SEPARATOR . $classes_map[ $namespaced_class_name ];
+		if ( isset( $classes_map[ $relative_class_name ] ) ) {
+			$filename = self::$default_path . $classes_map[ $relative_class_name ];
 		} else {
 			$filename = strtolower(
 				preg_replace(
 					array( '/([a-z])([A-Z])/', '/_/', '/\\\/', '/^(.+)\/(.*)$/' ),
 					array( '$1-$2', '-', DIRECTORY_SEPARATOR, '$1/class-$2' ),
-					$namespaced_class_name
+					$relative_class_name
 				)
 			);
 
@@ -118,33 +115,31 @@ class Autoloader {
 	}
 
 	/**
-	 * Autoloads the class
+	 * Autoloads the class.
 	 *
-	 * For a given class, check if it exist and load it.
+	 * For a given class, check if it belongs to our namespace and load it.
 	 *
-	 * @since  1.0.0
+	 * @since  {{version}}
 	 * @access private
 	 * @static
 	 *
 	 * @param string $class_name Class Name to be loaded.
 	 */
-	private static function autoload( $class_name ) {
-
-		$len = strlen( self::$default_namespace );
+	private static function autoload( string $class_name ): void {
 
 		// Move to the next autoloader if class doesn't belong to the default_namespace.
-		if ( 0 !== strpos( $class_name, self::$default_namespace . '\\' ) ) {
+		if ( ! str_starts_with( $class_name, self::$default_namespace . '\\' ) ) {
 			return;
 		}
 
-		// get the relative classname.
-		$class_name = preg_replace( '/^' . self::$default_namespace . '\\\/', '', $class_name );
-
-		// get the namespaced classname.
-		$namespaced_class_name = self::$default_namespace . '\\' . $class_name;
-
-		if ( ! class_exists( $class_name ) ) {
-			self::load_class( $class_name );
+		// Already loaded — nothing to do (pass false to avoid re-triggering autoload).
+		if ( class_exists( $class_name, false ) || interface_exists( $class_name, false ) || enum_exists( $class_name, false ) ) {
+			return;
 		}
+
+		// Strip the default namespace prefix to get the relative class name.
+		$relative_class_name = substr( $class_name, strlen( self::$default_namespace ) + 1 );
+
+		self::load_class( $relative_class_name );
 	}
 }

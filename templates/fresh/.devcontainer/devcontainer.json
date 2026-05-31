@@ -1,0 +1,87 @@
+{
+	"name": "Stacker WordPress Plugin",
+
+	// Reuse the project's existing Docker Compose stack (WordPress + Xdebug,
+	// MariaDB, Adminer, Mailpit) rather than maintaining a second definition.
+	// The second file is a devcontainer-only overlay that repoints Xdebug at
+	// localhost (the IDE runs inside the container here, not on the host).
+	"dockerComposeFile": [
+		"../docker-compose.yaml",
+		"docker-compose.devcontainer.yaml"
+	],
+
+	// Attach to the WordPress/PHP container; the other services start with it.
+	"service": "wordpress",
+
+	// The plugin is bind-mounted here by docker-compose.yaml (see its volumes:),
+	// so this is where the source lives inside the container.
+	"workspaceFolder": "/var/www/html/wp-content/plugins/stacker-boilerplate",
+
+	// Match the host ports published in docker-compose.yaml.
+	"forwardPorts": [10008, 3308, 8082, 8026],
+	"portsAttributes": {
+		"10008": { "label": "WordPress", "onAutoForward": "notify" },
+		"3308": { "label": "MariaDB" },
+		"8082": { "label": "Adminer" },
+		"8026": { "label": "Mailpit" }
+	},
+
+	// No Node/Composer features and no install step on purpose: build tooling
+	// (npm run build, composer install) is run on the host (Mac). The container
+	// only serves WordPress + Xdebug and edits the bind-mounted source, so this
+	// reopens fast and never re-installs the ~1 GB node_modules over the mount.
+	// vendor/ and node_modules/ come in via the host bind mount and work as-is.
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"bmewburn.vscode-intelephense-client",
+				"shevaua.phpcs",
+				"persoderlind.vscode-phpcbf",
+				"neilbrayfield.php-docblocker",
+				"zobo.php-intellisense",
+				"mehedidracula.php-namespace-resolver",
+				"mrmlnc.vscode-scss",
+				"usernamehw.errorlens",
+				"wordpresstoolbox.wordpress-toolbox",
+				"claudiosanches.wpcs-whitelist-flags",
+				"xdebug.php-debug",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode"
+			],
+			"settings": {
+				"php.validate.executablePath": "/usr/local/bin/php",
+				// Don't let VS Code crawl/watch the 1 GB node_modules (or vendor)
+				// over the slow macOS bind mount — this is a big perceived-speed win.
+				"files.watcherExclude": {
+					"**/node_modules/**": true,
+					"**/vendor/**": true,
+					"**/wordpress/**": true
+				},
+				"search.exclude": {
+					"**/node_modules": true,
+					"**/vendor": true,
+					"**/wordpress": true
+				}
+			}
+		}
+	},
+
+	// Turn Xdebug OFF for everything VS Code spawns in the container (phpcs,
+	// phpcbf, integrated terminal, tasks). With xdebug.start_with_request=yes,
+	// every CLI php run otherwise tries to reach the debugger on :9003 and, when
+	// nothing is listening, logs "Could not connect..." to stderr — which the
+	// phpcs extension reads and chokes on ("returns a valid json object" error).
+	// remoteEnv does NOT reach Apache (started by the container entrypoint, not
+	// by VS Code), so web/page step-debugging is unaffected. To step-debug a CLI
+	// script, launch it with an explicit XDEBUG_MODE=debug.
+	"remoteEnv": {
+		"XDEBUG_MODE": "off"
+	},
+
+	// Apache in the base image runs as root; keep VS Code consistent with it.
+	"remoteUser": "root",
+
+	// Stop the whole compose stack when the dev container window closes.
+	"shutdownAction": "stopCompose"
+}

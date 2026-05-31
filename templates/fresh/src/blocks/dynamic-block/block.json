@@ -1,0 +1,27 @@
+{
+	"apiVersion": 3,
+	"name": "{{blockNamespace}}/dynamic-block",
+	"title": "Dynamic Example Block",
+	"description": "A server-rendered (dynamic) block. Its markup is produced by render.php on every request, so it always reflects live data.",
+	"icon": "update",
+	"category": "{{blockCategory}}",
+	"keywords": [
+		"{{blockNamespace}}",
+		"dynamic",
+		"server"
+	],
+	"textdomain": "{{textDomain}}",
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": "Published posts"
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "file:index.js",
+	"editorStyle": "file:index.css",
+	"style": "file:style-index.css",
+	"render": "file:render.php"
+}

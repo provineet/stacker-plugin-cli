@@ -4,11 +4,11 @@ import './editor.scss';
 
 export default function Edit() {
 	return (
-		<p { ...useBlockProps() }>
-			{ __(
+		<p {...useBlockProps()}>
+			{__(
 				"Stacker Boilerplate - Hello Sparky!!! I'm your first block getting edited right in the Gutenberg editor!",
-				'stacker-boilerplate'
-			) }
+				'{{textDomain}}'
+			)}
 		</p>
 	);
 }

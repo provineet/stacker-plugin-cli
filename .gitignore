@@ -6,6 +6,9 @@ node_modules/
 
 /plugin-name/
 
+# templatize default output (review then copy into templates/)
+/templatized-output/
+
 # Packages #
 ############
 *.7z

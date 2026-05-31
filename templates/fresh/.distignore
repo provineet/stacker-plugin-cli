@@ -1,0 +1,48 @@
+# Files and directories excluded from the distributable plugin zip
+# (built with `npm run plugin-zip`). Everything else — the main plugin file,
+# inc/, blocks/, assets/, and the production Composer vendor/ — is included.
+
+# Version control / OS
+/.git
+/.github
+/.gitignore
+/.husky
+/.vscode
+/.claude
+.DS_Store
+
+# Sources & build tooling (only compiled output ships)
+/src
+/node_modules
+/webpack.assets.js
+/package.json
+/package-lock.json
+/eslint.config.js
+.eslintrc
+.eslintignore
+.stylelintrc
+.stylelintignore
+.prettierrc
+
+# Composer manifests & tooling config
+/composer.json
+/composer.lock
+/.phpcs.xml.dist
+/.phpunit.result.cache
+
+# Tests
+/tests
+/phpunit.xml.dist
+
+# Local dev environment
+/wordpress
+/docker-configs
+/docker-compose.yaml
+/Dockerfile
+
+# Build artifacts & misc
+/dist
+/dev-dist
+*.zip
+*.map
+/todo

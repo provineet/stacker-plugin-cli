@@ -3,8 +3,10 @@
  * Loader Class
  *
  * @package {{packageName}}
- * @since {{version}}
+ * @since 1.0
  */
+
+declare(strict_types=1);
 
 namespace {{namespace}};
 
@@ -13,29 +15,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Loader Class
+ * Bootstraps the plugin: registers the autoloader, loads helper functions and
+ * wires up the admin/frontend classes.
  */
-class Loader {
+final class Loader {
 
 	/**
 	 * Static Instance Holder
 	 *
-	 * @var Loader
+	 * @var Loader|null
 	 */
-	public static $instance = null;
+	public static ?Loader $instance = null;
 
 	/**
 	 * Constructor
 	 */
 	private function __construct() {
 
-		// registers an autoloader for classes.
+		// Registers an autoloader for classes.
 		$this->register_classes_autoloader();
 
-		// loads all the files within 0 depth of inc folder.
+		// Loads all the files within 0 depth of inc folder.
 		$this->include_functions_files();
 
-		// bootstraping our theme.
+		// Bootstrapping our plugin.
 		$this->bootstrap_plugin();
 	}
 
@@ -44,18 +47,14 @@ class Loader {
 	 *
 	 * Singleton instance of our class
 	 *
-	 * @since 1.0.0
+	 * @since {{version}}
 	 * @access public
 	 * @static
 	 *
 	 * @return Loader An instance of our class.
 	 */
-	public static function instance() {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+	public static function instance(): Loader {
+		return self::$instance ??= new self();
 	}
 
 	/**
@@ -63,11 +62,11 @@ class Loader {
 	 *
 	 * Loads all the classes.
 	 *
-	 * @since 1.0.0
+	 * @since {{version}}
 	 * @access private
 	 */
-	private function register_classes_autoloader() {
-		require_once {{constantPrefix}}_PATH . '/inc/class-autoloader.php';
+	private function register_classes_autoloader(): void {
+		require_once {{constantPrefix}}_PATH . 'inc/class-autoloader.php';
 		Autoloader::run();
 	}
 
@@ -76,27 +75,39 @@ class Loader {
 	 *
 	 * Includes all the files that matches {*-functions.php} glob within inc/helpers folder
 	 *
-	 * @since 1.0.0
+	 * @since {{version}}
 	 * @access private
 	 */
-	private function include_functions_files() {
+	private function include_functions_files(): void {
 
-		$files = glob( {{constantPrefix}}_PATH . '/inc/helpers/*-functions.php' );
+		$files = glob( {{constantPrefix}}_PATH . 'inc/helpers/*-functions.php' );
+		if ( false === $files ) {
+			return;
+		}
+
 		foreach ( $files as $file ) {
 			require_once $file;
 		}
 	}
 
 	/**
-	 * Bootraps our theme
+	 * Bootstraps our plugin.
 	 *
-	 * Creating instances of classes and run functions required to setup our theme
+	 * Creates instances of the classes required to set up the plugin. Admin-only
+	 * code stays behind is_admin() so it never runs on the frontend.
 	 *
 	 * @return void
 	 */
-	private function bootstrap_plugin() {
-		// bootstrapping admin class.
-		$admin = new \{{namespace}}\ADMIN\Admin();
+	private function bootstrap_plugin(): void {
+		// Register the settings option/REST schema everywhere — REST save
+		// requests are not is_admin(), so this must run unconditionally.
+		new SETTINGS\Settings();
+
+		if ( is_admin() ) {
+			new ADMIN\Admin();
+		} else {
+			new Frontend\Frontend();
+		}
 	}
 
 	/**
@@ -105,11 +116,11 @@ class Loader {
 	 * Disable class cloning and throw an error on object clone.
 	 *
 	 * @access public
-	 * @since 1.0.0
+	 * @since {{version}}
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Something went wrong.', '{{textDomain}}' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Something went wrong.', '{{textDomain}}' ), '{{version}}' );
 	}
 
 	/**
@@ -118,10 +129,10 @@ class Loader {
 	 * Disable unserializing of the class.
 	 *
 	 * @access public
-	 * @since 1.0.0
+	 * @since {{version}}
 	 */
 	public function __wakeup() {
 		// Unserializing instances of the class is forbidden.
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Something went wrong.', '{{textDomain}}' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Something went wrong.', '{{textDomain}}' ), '{{version}}' );
 	}
 }

@@ -1,8 +1,8 @@
 {
   "name": "stacker-plugin-cli",
-  "description": "A zero configuration dev-toolkit for WordPress Plugin Developers.\nSupports: Gutenberg Blocks, PHPUnit, WPCS, LocalWP, Docker Compose and more.",
-  "version": "1.0.7",
-  "license": "MIT",
+  "description": "A zero configuration dev-toolkit for WordPress Plugin Developers.\nFeatures: Gutenberg Blocks, PHPUnit, WPCS, LocalWP, Docker Compose and Built-in React Settings Page, and more.",
+  "version": "2.0.0",
+  "license": "GPL-2.0-or-later",
   "bin": {
     "stacker": "index.js",
     "stk": "index.js"
@@ -36,6 +36,7 @@
   "scripts": {
     "start": "node index.js",
     "format": "prettier --write \"./**/*.{js,json}\"",
+    "templatize": "rm -rf templates/fresh && node utils/templatize.js",
     "test": "jest"
   },
   "dependencies": {
@@ -48,14 +49,13 @@
     "cli-meow-help": "^2.0.2",
     "cli-should-cancel": "^1.0.3",
     "cli-welcome": "^2.2.2",
-    "copy-template-dir": "^1.4.0",
     "enquirer": "^2.3.6",
     "meow": "^9.0.0",
     "ora": "^5.4.0",
-    "semver": "^7.3.5",
-    "shelljs": "^0.8.4"
+    "semver": "^7.3.5"
   },
   "devDependencies": {
-    "prettier": "^3.1.0"
+    "prettier": "^3.1.0",
+    "replace-in-file": "^8.4.0"
   }
 }

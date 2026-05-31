@@ -1,11 +1,10 @@
 const fs = require('fs');
 const ora = require('ora');
 const path = require('path');
-const copy = require('copy-template-dir');
+const copyDir = require('./copydir');
 const shouldCancel = require('cli-should-cancel');
 const { green: g, dim: d, red: r, yellow: y } = require('chalk');
 const { choice } = require('./ask');
-const shell = require('shelljs');
 const spinner = ora({ text: '' });
 
 const setDirectories = async (userInputs, pluginFolder = null) => {
@@ -13,74 +12,92 @@ const setDirectories = async (userInputs, pluginFolder = null) => {
 		pluginFolder == null
 			? userInputs.pluginFileName
 			: pluginFolder;
-	let inDirPath = '',
-		outDirPath = '';
-	// version is available only in fresh installations
-	if (userInputs.version) {
-		outDirPath = path.join(process.cwd(), outDirName);
-		inDirPath = path.join(__dirname, '../', 'templates/fresh');
-	} else {
-		outDirPath = process.cwd();
-		inDirPath = path.join(__dirname, '../', 'templates/existing');
-	}
+	const outDirPath = path.join(process.cwd(), outDirName);
+	const inDirPath = path.join(__dirname, '../', 'templates/fresh');
 
 	return [inDirPath, outDirPath, outDirName];
 };
 
-const checkFolder = async (userInputs, outDirPath, outDirName) => {
+const confirmOverwrite = async message => {
+	const proceed = await choice({
+		name: 'question',
+		message,
+		choices: ['Overwrite', 'Cancel'],
+		hint: `Use arrow key to change option type`
+	});
+
+	proceed === 'Cancel' && shouldCancel();
+};
+
+const checkFolder = async (outDirPath, outDirName) => {
+	// Fresh install: the plugin lives in its own new subfolder.
 	if (fs.existsSync(outDirPath)) {
-		const proceed = await choice({
-			name: 'question',
-			message: `${r(
+		await confirmOverwrite(
+			`${r(
 				`\n\nPlugin \"${outDirName}\" already exists in your current folder.`
 			)}\n${y(
 				`Do you want to continue, it will overwrite the existing folder?`
-			)}`,
-			choices: ['Overwrite', 'Cancel'],
-			hint: `Use arrow key to change option type`
-		});
-
-		proceed === 'Cancel' && shouldCancel();
-	} else if (fs.existsSync(path.join(outDirPath, 'inc'))) {
-		const proceed = await choice({
-			name: 'question',
-			message: `${r(
-				`\n\n'inc' folder already exists within your plugin's folder. `
-			)}\n${y(
-				`Choose Continue to overwrite | Cancel to bail out.`
-			)}`,
-			choices: ['Overwrite', 'Cancel'],
-			hint: `Use arrow key to change option type`
-		});
-
-		proceed === 'Cancel' && shouldCancel();
-
-	} else if (fs.existsSync(path.join(outDirPath, 'package.json'))) {
-		const proceed = await choice({
-			name: 'question',
-			message: `${r(
-				`\n\nPackage.json file already exists within your plugin's folder. `
-			)}\n${y(`Choose Continue to overwrite | Cancel to bail out.`)}`,
-			choices: ['Overwrite', 'Cancel'],
-			hint: `Use arrow key to change option type`
-		});
-
-		proceed === 'Cancel' && shouldCancel();
-	} else if (fs.existsSync(path.join(outDirPath, 'composer.json'))) {
-		const proceed = await choice({
-			name: 'question',
-			message: `${r(
-				`\n\ncomposer.json file already exists within your plugin's folder. `
-			)}\n${y(`Choose Continue to overwrite | Cancel to bail out.`)}`,
-			choices: ['Overwrite', 'Cancel'],
-			hint: `Use arrow key to change option type`
-		});
-
-		proceed === 'Cancel' && shouldCancel();
+			)}`
+		);
 	}
 };
 
+// Strip Gutenberg block build/start commands from a generated package.json.
+const removeBlockBuildCommands = pkgPath => {
+	if (!fs.existsSync(pkgPath)) {
+		return;
+	}
+
+	const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+	const scripts = pkg.scripts || {};
+
+	// drop the standalone block scripts (e.g. build:blocks, start:blocks).
+	for (const name of Object.keys(scripts)) {
+		if (name.endsWith(':blocks')) {
+			delete scripts[name];
+		}
+	}
+
+	// drop references to the removed block scripts from aggregate scripts
+	// and tidy up the leftover whitespace from `concurrently`.
+	for (const [name, command] of Object.entries(scripts)) {
+		scripts[name] = command
+			.replace(/"npm:[\w-]+:blocks"\s*/g, '')
+			.replace(/\s{2,}/g, ' ')
+			.trim();
+	}
+
+	// the `blocks` output directory is no longer built, so don't ship it.
+	if (Array.isArray(pkg.files)) {
+		pkg.files = pkg.files.filter(file => file !== 'blocks');
+	}
+
+	fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, '\t') + '\n');
+};
+
+// Flip the `<PREFIX>_BLOCKS` define to false so the main plugin file skips
+// registering gutenberg blocks when the plugin doesn't ship any.
+const disableBlocksConstant = (pluginFilePath, constantPrefix) => {
+	if (!fs.existsSync(pluginFilePath)) {
+		return;
+	}
+
+	const contents = fs.readFileSync(pluginFilePath, 'utf8');
+	const updated = contents.replace(
+		new RegExp(`(define\\(\\s*'${constantPrefix}_BLOCKS'\\s*,\\s*)true(\\s*\\))`),
+		'$1false$2'
+	);
+
+	fs.writeFileSync(pluginFilePath, updated);
+};
+
 module.exports = async userInputs => {
+
+	// When using Docker Desktop, pull the port out of the proxy (e.g. "localhost:8080" -> "8080").
+	const port =
+		userInputs.devEnv === 'Docker Desktop'
+			? userInputs.proxy.split(':').pop()
+			: undefined;
 
 	// Adds/Remove Gutenberg Blocks Support
 	const packageBuildCommand = userInputs.blocks === 'No' ? 'js' : 'js:blocks';
@@ -88,57 +105,55 @@ module.exports = async userInputs => {
 	const assetsFolder =  userInputs.blocks === 'Yes' ? `'../assets/js/' + ` : '';
 
 	userInputs = {
-		reqWP: '5.3',
-		reqPHP: '7.2',
+		year: new Date().getFullYear(),
 		packageBuildCommand,
 		pluginSupports,
 		assetsFolder,
+		wp_port: port ? port : userInputs.proxy,
 		...userInputs
 	};
 
 	// setting input/output directories path and name.
-	[inDirPath, outDirPath, outDirName] = await setDirectories(userInputs);
+	const [inDirPath, outDirPath, outDirName] = await setDirectories(userInputs);
 
 	// check if the plugin folder or files already exists in the current working directory.
-	await checkFolder(userInputs, outDirPath, outDirName);
+	await checkFolder(outDirPath, outDirName);
 
-	return new Promise((resolve, reject) => {
-		console.log();
-		spinner.start(`${y(`Generating your plugin files...\n`)}`);
-		copy(inDirPath, outDirPath, userInputs, (err, createdFiles) => {
-			
-			if (err) reject(err);
+	console.log();
+	spinner.start(`${y(`Generating your plugin files...\n`)}`);
 
-			// removing src/blocks from the output if plugin isn't going to register gutenberg blocks
-			if(userInputs.blocks === 'No'){
-				shell.exec(
-					`rm -rf ${outDirPath}/src/blocks`,
-					{silent: true}
-				);
-				inBlocks = path.join(__dirname, '../', 'templates/without-blocks');
-				copy( inBlocks , outDirPath, userInputs, (err, createdFiles ) => {
-					if(err) reject(err);
-				} );
-			}
+	try {
+		// copy the base template into the output directory.
+		await copyDir(inDirPath, outDirPath, userInputs);
 
-			// removing docker files if devEnv is localWp
-			if(userInputs.devEnv === 'LocalWP'){
-				shell.exec(
-					`rm -rf ${outDirPath}/docker-configs && rm ${outDirPath}/docker-compose.yaml && rm ${outDirPath}/Dockerfile`,
-					{silent: true}
-				);
-			}
+		// remove src/blocks if the plugin isn't going to register gutenberg blocks.
+		if (userInputs.blocks === 'No') {
+			fs.rmSync(path.join(outDirPath, 'src/blocks'), { recursive: true, force: true });
+			removeBlockBuildCommands(path.join(outDirPath, 'package.json'));
+			disableBlocksConstant(
+				path.join(outDirPath, `${userInputs.pluginFileName}.php`),
+				userInputs.constantPrefix
+			);
+		}
 
-			// removing PHPUnit files
-			if(userInputs.phpUnit === 'No'){
-				shell.exec(
-					`rm -rf ${outDirPath}/tests && rm ${outDirPath}/.travis.yml && rm ${outDirPath}/phpunit.xml.dist`,
-					{silent: true}
-				);
-			}
+		// remove docker files if devEnv is LocalWP.
+		if (userInputs.devEnv === 'LocalWP') {
+			fs.rmSync(path.join(outDirPath, 'docker-configs'), { recursive: true, force: true });
+			fs.rmSync(path.join(outDirPath, 'docker-compose.yaml'), { force: true });
+			fs.rmSync(path.join(outDirPath, 'Dockerfile'), { force: true });
+		}
 
-			spinner.succeed(`${g(`PLUGIN FILES GENERATED!!!`)}\n`);
-			resolve(outDirPath);
-		});
-	});
+		// remove PHPUnit files.
+		if (userInputs.phpUnit === 'No') {
+			fs.rmSync(path.join(outDirPath, 'tests'), { recursive: true, force: true });
+			fs.rmSync(path.join(outDirPath, '.travis.yml'), { force: true });
+			fs.rmSync(path.join(outDirPath, 'phpunit.xml.dist'), { force: true });
+		}
+	} catch (err) {
+		spinner.fail(`${r(`Failed to generate plugin files.`)}\n`);
+		throw err;
+	}
+
+	spinner.succeed(`${g(`PLUGIN FILES GENERATED!!!`)}\n`);
+	return outDirPath;
 };

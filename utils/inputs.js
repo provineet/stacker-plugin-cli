@@ -3,6 +3,7 @@ const { blue: b, dim: d, yellow: y, red: r } = require('chalk');
 
 const { confirm, simpleText, choice } = require('./ask');
 const validations = require('./validations');
+const pkg = require('./../package.json');
 
 let validate = validations.notEmpty;
 
@@ -16,7 +17,7 @@ function strToCamelCase(str) {
 const inputs = async () => {
 
 	// take user inputs
-	const userInputs = await freshInstall();
+	const userInputs = await collectInputs();
 
 	// take confirmation on the user inputs
 	const confirmInputs = await confirm({
@@ -28,6 +29,15 @@ const inputs = async () => {
 		userInputs.namespace = strToCamelCase(userInputs.name).replace(/ /g, "_").toUpperCase();
 		userInputs.pluginFileName = userInputs.name.toLowerCase().replace(/ /g, "-");
 		userInputs.constantPrefix = userInputs.prefix.toUpperCase();
+		// block identifiers, derived from the text domain (already lowercase-kebab).
+		userInputs.blockNamespace = userInputs.textDomain.trim();
+		userInputs.blockCategory = `${userInputs.textDomain.trim()}-category`;
+		// composer vendor, derived from the author name (lowercase, hyphenated).
+		userInputs.composerVendor = userInputs.authorName
+			.trim()
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-+|-+$/g, '');
 		return userInputs;
 	} else if (confirmInputs === 'Restart') {
 		return 'Restart';
@@ -36,8 +46,12 @@ const inputs = async () => {
 	}
 };
 
-const freshInstall = async () => {
-	
+const collectInputs = async () => {
+
+	const devEnv = await choice({
+		message: 'Which of the following development environment you are using?',
+		choices: ['Docker Desktop', 'LocalWP'],
+	});
 	const blocks = await choice({
 		message: 'Is your plugin registers Gutenberg blocks?',
 		choices: ['Yes', 'No'],
@@ -45,10 +59,6 @@ const freshInstall = async () => {
 	const phpUnit = await choice({
 		message: 'Configure PHPUnit?',
 		choices: ['Yes', 'No'],
-	});
-	const devEnv = await choice({
-		message: 'Which of the following development environment you are using?',
-		choices: ['Docker Desktop', 'LocalWP'],
 	});
 	const pluginName = await simpleText({
 		message: 'Name of your Plugin?',
@@ -59,7 +69,7 @@ const freshInstall = async () => {
 	const version = await simpleText({
 		message: 'Plugin Version',
 		validate: validations.version,
-		initial: '1.0.0'
+		initial: pkg.version
 	});
 	const textDomain = await simpleText({
 		message: "Your plugin's text domain",
@@ -75,7 +85,7 @@ const freshInstall = async () => {
 	});
 	const pluginUrl = await simpleText({
 		message: 'Plugin Url',
-		initial: 'https://blogohblog.com',
+		initial: 'https://plugindomain.com',
 		hint: null
 	});
 	const description = await simpleText({
@@ -86,12 +96,17 @@ const freshInstall = async () => {
 	const authorName = await simpleText({
 		message: 'Author Name',
 		hint: null,
-		initial: 'Vineet',
+		initial: 'Author Name',
 	});
 	const authorUrl = await simpleText({
 		message: 'Author Url',
 		hint: null,
-		initial: 'https://blogohblog.com',
+		initial: 'https://plugindomain.com',
+	});
+	const authorEmail = await simpleText({
+		message: 'Author Email',
+		hint: null,
+		initial: 'you@plugindomain.com',
 	});
 	const packageName = await simpleText({
 		message: 'Package name for @package directive for plugin files',
@@ -102,7 +117,7 @@ const freshInstall = async () => {
 		message: 'License',
 		hint: null,
 		validate,
-		initial: 'GPL-3.0-or-later'
+		initial: 'GPL-2.0-or-later'
 	});
 	const proxyInitial = (devEnv === 'LocalWP') ? 'localwp.test' : 'localhost:8080';
 	const proxy = await simpleText({
@@ -112,9 +127,7 @@ const freshInstall = async () => {
 	});
 
 	console.log(`
-    ${y(
-		`Configuring a fresh installation of Stacker Plugin Boilerplate.`
-	)}}
+    ${y(`Configuring a fresh installation of Stacker Plugin Boilerplate.`)}
 
     ${d(`Plugin Name`)}: ${b(pluginName)}
     ${d(`Version`)}: ${b(version)}
@@ -124,6 +137,7 @@ const freshInstall = async () => {
     ${d(`Description`)}: ${b(description)}
     ${d(`Author Name`)}: ${b(authorName)}
     ${d(`Author Url`)}: ${b(authorUrl)}
+    ${d(`Author Email`)}: ${b(authorEmail)}
     ${d(`@Package`)}: ${b(packageName)}
     ${d(`License`)}: ${b(license)}
     ${d(`Development Environment`)}: ${b(devEnv)}
@@ -140,6 +154,7 @@ const freshInstall = async () => {
 		description,
 		authorName,
 		authorUrl,
+		authorEmail,
 		packageName,
 		blocks,
 		license,
