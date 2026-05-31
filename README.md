@@ -1,6 +1,6 @@
 # STACKER-plugin-CLI : WordPress Plugin Developer Toolkit
 
-![WordPress Scaffolding Plugin Generator](https://raw.githubusercontent.com/provineet/stacker-plugin-cli/main/stacker-plugin-cli.png)
+![WordPress Scaffolding Plugin Generator](./stacker-plugin-cli-v2.png)
 
 A zero-configuration CLI that scaffolds a modern WordPress plugin in seconds. Answer a few questions and Stacker generates a fully wired-up plugin built on PHP 8.1+, WordPress 7.0, [`@wordpress/scripts`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/), and a complete development, testing, and packaging workflow.
 
