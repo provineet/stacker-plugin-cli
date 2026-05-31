@@ -33,7 +33,7 @@ const stackerPlugin = async () => {
 	}
 
 	// generate files
-	const [err, pluginDir] = await to(generate(response));
+	const [err, pluginDir] = await to(generate(response, flags));
 
 	handleError('INPUT', err);
 

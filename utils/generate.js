@@ -2,6 +2,8 @@ const fs = require('fs');
 const ora = require('ora');
 const path = require('path');
 const copyDir = require('./copydir');
+const fetchTemplate = require('./fetchTemplate');
+const config = require('../templatize.config.js');
 const shouldCancel = require('cli-should-cancel');
 const { green: g, dim: d, red: r, yellow: y } = require('chalk');
 const { choice } = require('./ask');
@@ -13,9 +15,8 @@ const setDirectories = async (userInputs, pluginFolder = null) => {
 			? userInputs.pluginFileName
 			: pluginFolder;
 	const outDirPath = path.join(process.cwd(), outDirName);
-	const inDirPath = path.join(__dirname, '../', 'templates/fresh');
 
-	return [inDirPath, outDirPath, outDirName];
+	return [outDirPath, outDirName];
 };
 
 const confirmOverwrite = async message => {
@@ -91,7 +92,7 @@ const disableBlocksConstant = (pluginFilePath, constantPrefix) => {
 	fs.writeFileSync(pluginFilePath, updated);
 };
 
-module.exports = async userInputs => {
+module.exports = async (userInputs, flags = {}) => {
 
 	// When using Docker Desktop, pull the port out of the proxy (e.g. "localhost:8080" -> "8080").
 	const port =
@@ -113,13 +114,26 @@ module.exports = async userInputs => {
 		...userInputs
 	};
 
-	// setting input/output directories path and name.
-	const [inDirPath, outDirPath, outDirName] = await setDirectories(userInputs);
+	// setting output directory path and name.
+	const [outDirPath, outDirName] = await setDirectories(userInputs);
 
 	// check if the plugin folder or files already exists in the current working directory.
 	await checkFolder(outDirPath, outDirName);
 
 	console.log();
+
+	// fetch the template from the configured public repo (download + templatize,
+	// cached for offline reuse). This is the source copyDir reads from.
+	let inDirPath;
+	spinner.start(`${y(`Fetching plugin template...\n`)}`);
+	try {
+		inDirPath = await fetchTemplate(config, flags);
+		spinner.succeed(`${g(`Template ready.`)}`);
+	} catch (err) {
+		spinner.fail(`${r(`Failed to fetch the plugin template.`)}\n`);
+		throw err;
+	}
+
 	spinner.start(`${y(`Generating your plugin files...\n`)}`);
 
 	try {
