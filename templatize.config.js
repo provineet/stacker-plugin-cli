@@ -25,8 +25,23 @@
  * Set a `value` to '' (empty) to skip that literal for this run.
  */
 module.exports = {
-	// Where templatized output is written. Override with --dest.
-	// Kept separate from templates/ so you can review before copying it in.
+	// Public repo the GENERATOR pulls the working boilerplate plugin from at
+	// generation time (downloaded with degit, then templatized on the fly and
+	// cached locally — see utils/fetchTemplate.js). The repo must contain the
+	// EXACT literal `value`s listed below, or the tokens won't be injected.
+	//   repo  — a degit spec: 'owner/repo', 'github:owner/repo',
+	//           'gitlab:owner/repo', 'bitbucket:owner/repo', or a full https URL.
+	//   ref   — branch or tag to fetch.
+	//   subdir— optional path WITHIN the repo to use as the plugin root.
+	// Override at runtime with --repo / --ref, force a re-download with --refresh.
+	source: {
+		repo: 'provineet/stacker-plugin-boilerplate', // <-- set to the real boilerplate repo
+		ref: 'main',
+		subdir: ''
+	},
+
+	// Where the CLI templatizer (`npm run templatize -- --src <plugin>`) writes its
+	// output for local review. Override with --dest. Not used by the generator.
 	dest: './templates/fresh',
 
 	// Names/paths skipped entirely when copying & scanning. Matched like
@@ -74,7 +89,6 @@ module.exports = {
 		'LICENSE',
 		'readme.txt',
 		'readme.md',
-		'docker-compose.yaml',
 		'docker-configs/**'
 	],
 
@@ -88,6 +102,7 @@ module.exports = {
 		{ value: 'STACKER_PLUGIN', placeholder: '{{constantPrefix}}' },
 		{ value: 'namespace STACKER_PLUGIN', placeholder: 'namespace {{namespace}}' }, // often same as constantPrefix
 		{ value: 'Stacker Main', placeholder: '{{packageName}}' },
+		{ value: 'Stacker Settings', placeholder: '{{name}} Settings' },
 
 		// --- composer / blocks ---
 		{ value: 'Vineet Verma', placeholder: '{{authorName}}' },
@@ -96,9 +111,9 @@ module.exports = {
 
 		// --- author & urls ---
 		{ value: 'Vineet', placeholder: '{{authorName}}' },
+		{ value: 'vineet@blogohblog.com', placeholder: '{{authorEmail}}' },
+		{ value: 'https://blogohblog.com/stacker-boilerplate-plugin', placeholder: '{{pluginUrl}}' },
 		{ value: 'https://blogohblog.com', placeholder: '{{authorUrl}}' },
-		{ value: 'you@example.com', placeholder: '{{authorEmail}}' },
-		{ value: 'https://blogohblog.com', placeholder: '{{pluginUrl}}' },
 		
 		// --- meta ---
 		{ value: 'A modern WordPress Plugin Development boilerplate for your next awesome project.', placeholder: '{{description}}' },

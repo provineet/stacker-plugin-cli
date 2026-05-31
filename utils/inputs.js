@@ -30,7 +30,7 @@ const inputs = async () => {
 		userInputs.pluginFileName = userInputs.name.toLowerCase().replace(/ /g, "-");
 		userInputs.constantPrefix = userInputs.prefix.toUpperCase();
 		// block identifiers, derived from the text domain (already lowercase-kebab).
-		userInputs.blockNamespace = userInputs.textDomain.trim();
+		userInputs.blockNamespace = `${userInputs.textDomain.trim()}-block`;
 		userInputs.blockCategory = `${userInputs.textDomain.trim()}-category`;
 		// composer vendor, derived from the author name (lowercase, hyphenated).
 		userInputs.composerVendor = userInputs.authorName
@@ -48,18 +48,6 @@ const inputs = async () => {
 
 const collectInputs = async () => {
 
-	const devEnv = await choice({
-		message: 'Which of the following development environment you are using?',
-		choices: ['Docker Desktop', 'LocalWP'],
-	});
-	const blocks = await choice({
-		message: 'Is your plugin registers Gutenberg blocks?',
-		choices: ['Yes', 'No'],
-	});
-	const phpUnit = await choice({
-		message: 'Configure PHPUnit?',
-		choices: ['Yes', 'No'],
-	});
 	const pluginName = await simpleText({
 		message: 'Name of your Plugin?',
 		hint: null,
@@ -82,6 +70,18 @@ const collectInputs = async () => {
 		hint: 'prefix to be used to namespace plugin\'s global functions and constants.',
 		initial: pluginName.trim().toLowerCase().replace(/ /g, "_"),
 		validate
+	});
+	const devEnv = await choice({
+		message: 'Which of the following development environment you are using?',
+		choices: ['Docker Desktop', 'LocalWP'],
+	});
+	const blocks = await choice({
+		message: 'Is your plugin registers Gutenberg blocks?',
+		choices: ['Yes', 'No'],
+	});
+	const phpUnit = await choice({
+		message: 'Configure PHPUnit?',
+		choices: ['Yes', 'No'],
 	});
 	const pluginUrl = await simpleText({
 		message: 'Plugin Url',

@@ -31,6 +31,19 @@ const flags = {
 		default: process.cwd(),
 		alias: `o`,
 		desc: `Output path for your WordPress plugin files.`
+	},
+	repo: {
+		type: `string`,
+		desc: `Template source repo (degit spec). Overrides templatize.config.js source.repo.`
+	},
+	ref: {
+		type: `string`,
+		desc: `Branch or tag of the template repo to use.`
+	},
+	refresh: {
+		type: `boolean`,
+		default: false,
+		desc: `Force re-download of the template, ignoring the local cache.`
 	}
 };
 

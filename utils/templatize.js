@@ -122,30 +122,27 @@ function isVerbatim(absPath, root) {
 	);
 }
 
-// --- main --------------------------------------------------------------
-function main() {
-	const args = parseArgs(process.argv.slice(2));
-	if (args.help) return usage();
+// --- core ----------------------------------------------------------------
+/**
+ * The reusable conversion: copy `srcDir` -> `destDir`, replace literal values
+ * with their `{{placeholder}}` tokens in file CONTENTS, then rename files/folders
+ * the same way. Returns a result object so callers (the CLI report below, and the
+ * generator's fetch step) can decide what to print.
+ *
+ * The core itself never touches the console — callers report from the returned
+ * object (the CLI below) or stay silent and drive their own UX (the generator).
+ *
+ * `dry` — scan/report only, write nothing (CLI preview).
+ */
+function templatizeDir(srcDir, destDir, config, { dry = false } = {}) {
+	const src = path.resolve(srcDir);
+	const dest = path.resolve(destDir);
 
-	if (!args.src) {
-		console.error(`\n${r('Missing --src.')} ${d('Pass the path to your working plugin.')}`);
-		usage();
-		process.exitCode = 1;
-		return;
-	}
-
-	const src = path.resolve(args.src);
 	if (!fs.existsSync(src) || !fs.statSync(src).isDirectory()) {
-		console.error(`\n${r(`--src is not a directory:`)} ${src}`);
-		process.exitCode = 1;
-		return;
+		throw new Error(`templatize: source is not a directory: ${src}`);
 	}
-
-	const dest = path.resolve(args.dest || config.dest);
 	if (dest.startsWith(src + path.sep) || dest === src) {
-		console.error(`\n${r('--dest must be outside --src')} to avoid copying into itself.`);
-		process.exitCode = 1;
-		return;
+		throw new Error('templatize: dest must be outside src to avoid copying into itself.');
 	}
 
 	// Active literals: non-empty value, sorted longest-first to avoid collisions.
@@ -154,12 +151,10 @@ function main() {
 		.sort((a, b) => b.value.length - a.value.length);
 
 	if (!literals.length) {
-		console.error(`\n${r('No literals with a value set in templatize.config.js.')}`);
-		process.exitCode = 1;
-		return;
+		throw new Error('templatize: no literals with a value set in templatize.config.js.');
 	}
 
-	// Warn about duplicate values (ambiguous — first in sort order wins).
+	// Duplicate values (ambiguous — first in sort order wins). Reported, not fatal.
 	const byValue = new Map();
 	for (const l of literals) {
 		if (!byValue.has(l.value)) byValue.set(l.value, []);
@@ -167,18 +162,14 @@ function main() {
 	}
 	const dupes = [...byValue.entries()].filter(([, ph]) => ph.length > 1);
 
-	console.log(`\n${bold('templatize')} ${args.dry ? c('(dry run)') : ''}`);
-	console.log(`${d('src ')} ${src}`);
-	console.log(`${d('dest')} ${dest}\n`);
-
 	// 1) copy (skip in dry run) -----------------------------------------
-	if (!args.dry) {
+	if (!dry) {
 		if (fs.existsSync(dest)) fs.rmSync(dest, { recursive: true, force: true });
 		fs.cpSync(src, dest, { recursive: true, filter: makeCpFilter(src) });
 	}
 
 	// Scan target (dest if copied, else read-only from src).
-	const scanRoot = args.dry ? src : dest;
+	const scanRoot = dry ? src : dest;
 	const textFiles = walk(scanRoot).filter(isTextFile);
 
 	// Split off files that are copied verbatim — still copied (cpSync already did
@@ -188,10 +179,8 @@ function main() {
 
 	// 2) pre-count occurrences per literal (drives "never matched") ------
 	const counts = Object.fromEntries(literals.map(l => [l.placeholder, 0]));
-	const contentCache = new Map();
 	for (const file of convertFiles) {
 		const content = fs.readFileSync(file, 'utf8');
-		contentCache.set(file, content);
 		for (const l of literals) {
 			const m = content.match(new RegExp(escapeRegExp(l.value), 'g'));
 			if (m) counts[l.placeholder] += m.length;
@@ -207,7 +196,7 @@ function main() {
 			files: convertFiles,
 			from,
 			to,
-			dry: args.dry,
+			dry,
 			countMatches: true
 		});
 		contentChanged = results.filter(res => res.hasChanged).length;
@@ -229,13 +218,13 @@ function main() {
 		if (renamed !== base) {
 			const target = path.join(path.dirname(p), renamed);
 			renames.push([p, target]);
-			if (!args.dry) fs.renameSync(p, target);
+			if (!dry) fs.renameSync(p, target);
 		}
 	}
 
 	// 5) leftover scan (only meaningful on a real run) ------------------
 	const leftovers = [];
-	if (!args.dry) {
+	if (!dry) {
 		for (const file of walk(dest).filter(isTextFile)) {
 			if (isVerbatim(file, dest)) continue; // expected to still contain literals
 			const content = fs.readFileSync(file, 'utf8');
@@ -247,6 +236,41 @@ function main() {
 		}
 	}
 
+	const missed = literals.filter(l => counts[l.placeholder] === 0);
+
+	return { src, dest, scanRoot, literals, counts, dupes, contentChanged, renames, leftovers, missed, verbatimFiles };
+}
+
+// --- CLI -----------------------------------------------------------------
+function main() {
+	const args = parseArgs(process.argv.slice(2));
+	if (args.help) return usage();
+
+	if (!args.src) {
+		console.error(`\n${r('Missing --src.')} ${d('Pass the path to your working plugin.')}`);
+		usage();
+		process.exitCode = 1;
+		return;
+	}
+
+	const src = path.resolve(args.src);
+	const dest = path.resolve(args.dest || config.dest);
+
+	console.log(`\n${bold('templatize')} ${args.dry ? c('(dry run)') : ''}`);
+	console.log(`${d('src ')} ${src}`);
+	console.log(`${d('dest')} ${dest}\n`);
+
+	let result;
+	try {
+		result = templatizeDir(src, dest, config, { dry: args.dry });
+	} catch (err) {
+		console.error(`\n${r(err.message)}`);
+		process.exitCode = 1;
+		return;
+	}
+
+	const { scanRoot, literals, counts, dupes, contentChanged, renames, leftovers, missed, verbatimFiles } = result;
+
 	// --- report --------------------------------------------------------
 	console.log(bold('Literals'));
 	for (const l of literals) {
@@ -255,7 +279,6 @@ function main() {
 		console.log(`  ${tag.padEnd(12)} ${d(l.value)} ${d('->')} ${l.placeholder}`);
 	}
 
-	const missed = literals.filter(l => counts[l.placeholder] === 0);
 	if (missed.length) {
 		console.log(`\n${y('⚠ never matched')} ${d('(value not found in source — check the value or drop the literal):')}`);
 		missed.forEach(l => console.log(`  ${l.placeholder} ${d(`(looked for "${l.value}")`)}`));
@@ -289,7 +312,7 @@ function main() {
 		console.log(`${c('Dry run')} — nothing written. Re-run without ${c('--dry')} to apply.`);
 	} else {
 		console.log(`${g('Done.')} ${contentChanged} file(s) edited, ${renames.length} renamed, ${verbatimFiles.length} copied verbatim.`);
-		console.log(`${d('Review')} ${dest} ${d('then copy it into templates/ as needed.')}`);
+		console.log(`${d('Review')} ${result.dest} ${d('then copy it into templates/ as needed.')}`);
 	}
 }
 
@@ -304,4 +327,8 @@ function walkAll(dir, root = dir, out = []) {
 	return out;
 }
 
-main();
+// Run the CLI only when invoked directly (e.g. `npm run templatize`); when
+// required as a module (by utils/fetchTemplate.js) just expose the core.
+if (require.main === module) main();
+
+module.exports = { templatizeDir };
